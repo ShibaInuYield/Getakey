@@ -2,14 +2,14 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const SimpleStorage = await hre.ethers.getContractFactory("SimpleStorage");
+  const RentalCollection = await hre.ethers.getContractFactory("RentalCollection");
   // put constructor params in deploy
-  const simpleStorage = await SimpleStorage.deploy();
+  const rentalCollection = await RentalCollection.deploy();
 
-  await simpleStorage.deployed();
+  await rentalCollection.deployed();
 
   console.log(
-    `SimpleStorage has been deployed to address : ${simpleStorage.address}`
+    `SimpleStorage has been deployed to address : ${rentalCollection.address}`
   );
 }
 
