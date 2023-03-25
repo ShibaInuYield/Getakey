@@ -1,25 +1,68 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.18;
 
-import "../node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 
 contract RentalCollection is ERC721, Ownable {
 
-struct Rental {
-        uint256 start;
-        address tenant;
-        bool active;
+    struct Rental {
+        address owner;
+        string name;
+        string symbol;
+        string location;
+        mapping(uint256 => RentalPeriod) rentals;
     }
 
-    Rental[] public rentals;
+    struct RentalPeriod {
+        uint256 id;
+        uint256 startTimestamp;
+        uint256 endTimestamp;
+        address owner;
+        bool rented;
+        bool isPaid;
+        mapping(uint256 => Renter) renters;
+    }
 
-    constructor() ERC721("","") {}
+    struct Renter {
+        address renter;
+        string firstName;
+        string lastName;
+        bool hasAccess;
+    }
 
-    function init(string calldata name_, string calldata symbol_) public {
-        _name = name_ ;
-        _symbol = symbol_ ;
-}
-}
+    uint256 public collectionNum;   
+
+    mapping(uint256 => RentalPeriod) private rentalPeriods;
+    mapping(uint256 => mapping(uint256 => Renter)) public renters;
+    mapping(uint256 => Rental) public Rentals;
+
+    RentalPeriod[] public RentalPeriods;    
+
+        constructor() ERC721("","") {
+
+        Rental storage rental  = Rentals[collectionNum];
+        rental.owner = address(0);
+        rental.name = "GENESIS";
+        rental.symbol = "G0";
+        rental.location = "GENESIS";
+        collectionNum++;
+    }
+
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
+    function createCollection(string memory name, string memory symbol, string memory location, address owner) external onlyOwner {
+
+         _name = name ;
+        _symbol = symbol ;
+
+        Rental storage newCollection = Rentals[collectionNum];
+        newCollection.owner = owner;
+        newCollection.name = name;
+        newCollection.symbol = symbol;
+        newCollection.location = location;
+        collectionNum++;
+    }
+}   
