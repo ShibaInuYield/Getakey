@@ -12,7 +12,6 @@ contract RentalCollection is ERC721, Ownable {
         string name;
         string symbol;
         string location;
-        mapping(uint256 => RentalPeriod) rentals;
     }
 
     struct RentalPeriod {
@@ -41,13 +40,6 @@ contract RentalCollection is ERC721, Ownable {
     RentalPeriod[] public RentalPeriods;    
 
         constructor() ERC721("","") {
-
-        Rental storage rental  = Rentals[collectionNum];
-        rental.owner = address(0);
-        rental.name = "GENESIS";
-        rental.symbol = "G0";
-        rental.location = "GENESIS";
-        collectionNum++;
     }
 
     using Counters for Counters.Counter;

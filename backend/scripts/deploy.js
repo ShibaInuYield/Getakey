@@ -4,18 +4,28 @@ async function main() {
 
   const RentalCollectionFactory = await hre.ethers.getContractFactory("RentalCollectionFactory");
   const RentalCollection = await hre.ethers.getContractFactory("RentalCollection");
-  // put constructor params in deploy
+
   const rentalCollectionFactory = await RentalCollectionFactory.deploy();
   await rentalCollectionFactory.deployed();
-  await rentalCollectionFactory.createRentalCollection("R","R","addresse");
-  await rentalCollectionFactory.createRentalCollection("R1","R1","addresse1");
 
-  const rentalCollectionAddress = await rentalCollectionFactory.rentalCollections([1]);
+  await rentalCollectionFactory.createRentalCollection("GENESIS","GEN","ADDR");
+
+  // get the address of the owner of the contract
+  const rentalCollectionOwner = await rentalCollectionFactory.owner();
+  // get the address of the Rental contract
+  const rentalCollectionAddress = await rentalCollectionFactory.rentalCollections([0]);
+  // get the address of the first rentalCollection
   const rentalCollection = await RentalCollection.attach(rentalCollectionAddress);
-  const collectionNum = await rentalCollection.name();
+  // get name from ERC721 contract
+  const collectionName = await rentalCollection.name();
+  // get infos from rentals array
+  const firstRentalCollectionInstanceInfo = await rentalCollection.Rentals([0]);
+  const location = firstRentalCollectionInstanceInfo.location;
   console.log(
     `rentalCollection has been deployed to address : ${rentalCollectionAddress}`,
-    `rentalCollection has been deployed to address : ${collectionNum}`
+    `rentalCollectionFactory owner is : ${rentalCollectionOwner}`,
+    `rentalConnectionName is : ${collectionName}`,
+    `location is : ${location}`
   );
 }
 
