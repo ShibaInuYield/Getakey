@@ -10,16 +10,18 @@ contract RentalCollectionFactory is Ownable {
 
      address[] public rentalCollections;
 
+    uint256 public collectionFactoryNum;
 
       constructor(){
       }
 
      function createRentalCollection(string memory _rentalName, string memory _rentalSymbol, string memory _location) external returns (address collectionAddress) {
       RentalCollection rentalCollection = new RentalCollection();
-      rentalCollection.createCollection(_rentalName,_rentalSymbol,_location, msg.sender);
+      rentalCollection.createRental(_rentalName,_rentalSymbol,_location, msg.sender);
       rentalCollections.push(address(rentalCollection));
 
     emit RentalCollectionCreated(_rentalName,_rentalSymbol, collectionAddress, block.timestamp, msg.sender);
+        collectionFactoryNum++;
         return address(rentalCollection);
     }
 

@@ -1,31 +1,94 @@
+const fs = require('fs');
 const hre = require("hardhat");
 
 async function main() {
-
   const RentalCollectionFactory = await hre.ethers.getContractFactory("RentalCollectionFactory");
-  const RentalCollection = await hre.ethers.getContractFactory("RentalCollection");
+  const contractJSON = JSON.parse(fs.readFileSync("/home/fab/COURSALYRA/CryptoKey/backend/artifacts/contracts/RentalCollection.sol/RentalCollection.json"));
+  const abi = contractJSON.abi;
+ 
+  const signers = await hre.ethers.getSigners();
 
-  const rentalCollectionFactory = await RentalCollectionFactory.deploy();
-  await rentalCollectionFactory.deployed();
+  const rentalCollectionFactory = await RentalCollectionFactory.connect(signers[0]).deploy();
+  const rentalCollectionFactory2 = await RentalCollectionFactory.connect(signers[1]).deploy();
+  const rentalCollectionFactory3 = await RentalCollectionFactory.connect(signers[2]).deploy();
 
+  const deployedFactoryContract = await rentalCollectionFactory.deployed();
+  const rentalCollectionFactoryAddress = deployedFactoryContract.address;
   await rentalCollectionFactory.createRentalCollection("GENESIS","GEN","ADDR");
+  await rentalCollectionFactory.createRentalCollection("LOCATION_1","L1","ADDRESSE1");
 
+  const deployedFactoryContract2 =await rentalCollectionFactory2.deployed();
+  const rentalCollectionFactory2Address = deployedFactoryContract2.address;
+  await rentalCollectionFactory2.createRentalCollection("GENESIS","GEN","ADDR");
+  await rentalCollectionFactory2.createRentalCollection("LOCATION_2","L2","ADDRESSE2");
+
+  const deployedFactoryContract3 =await rentalCollectionFactory3.deployed();
+  const rentalCollectionFactory3Address = deployedFactoryContract3.address;
+  await rentalCollectionFactory3.createRentalCollection("GENESIS","GEN","ADDR");
+  await rentalCollectionFactory3.createRentalCollection("LOCATION_3","L3","ADDRESSE3");
+
+  //get number of created collection
+  const collectionFactoryNum = await rentalCollectionFactory.collectionFactoryNum();
   // get the address of the owner of the contract
   const rentalCollectionOwner = await rentalCollectionFactory.owner();
+  const rentalCollectionOwner2 = await rentalCollectionFactory2.owner();
+  const rentalCollectionOwner3 = await rentalCollectionFactory3.owner();
   // get the address of the Rental contract
   const rentalCollectionAddress = await rentalCollectionFactory.rentalCollections([0]);
-  // get the address of the first rentalCollection
-  const rentalCollection = await RentalCollection.attach(rentalCollectionAddress);
-  // get name from ERC721 contract
-  const collectionName = await rentalCollection.name();
-  // get infos from rentals array
-  const firstRentalCollectionInstanceInfo = await rentalCollection.Rentals([0]);
-  const location = firstRentalCollectionInstanceInfo.location;
+  const rentalCollectionAddressa = await rentalCollectionFactory.rentalCollections([1]);
+  const rentalCollectionAddress2 = await rentalCollectionFactory2.rentalCollections([0]);
+  const rentalCollectionAddress2a = await rentalCollectionFactory2.rentalCollections([1])
+  const rentalCollectionAddress3 = await rentalCollectionFactory3.rentalCollections([0]);
+  const rentalCollectionAddress3a = await rentalCollectionFactory3.rentalCollections([1]);
+  
+  //get rentalCollection contract deployed
+  const RentalCollection = new ethers.Contract(rentalCollectionAddress, abi, signers[0]);
+  const RentalCollectiona = new ethers.Contract(rentalCollectionAddressa, abi, signers[0]);
+  const RentalCollection2 = new ethers.Contract(rentalCollectionAddress2, abi, signers[0]);
+  const RentalCollection2a = new ethers.Contract(rentalCollectionAddress2a, abi, signers[0]);
+  const RentalCollection3 = new ethers.Contract(rentalCollectionAddress3, abi, signers[0]);
+  const RentalCollection3a = new ethers.Contract(rentalCollectionAddress3a, abi, signers[0]);
+  // set details of the RentalCollection
+  const collectionName = await RentalCollection.Rentals([0]);
+  const collectionNamea = await RentalCollectiona.Rentals([0]);
+  const collectionName2 = await RentalCollection2.Rentals([0]);
+  const collectionName2a = await RentalCollection2a.Rentals([0]);
+  const collectionName3 = await RentalCollection3.Rentals([0]);
+  const collectionName3a = await RentalCollection3a.Rentals([0]);
+
+  // // set info of rental period
+  
+  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false,false);
+  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false,false);
+  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",true,true);
+  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true,true);
+  const rentalPeriodsByRenter = await RentalCollection.getRentalPeriodsByRenter("0x90F79bf6EB2c4f870365E785982E1f101E93b906");
+
+  //get infor about rental
+  const rentalInfo = await RentalCollection.getRentalPeriodById(1);
+
   console.log(
-    `rentalCollection has been deployed to address : ${rentalCollectionAddress}`,
-    `rentalCollectionFactory owner is : ${rentalCollectionOwner}`,
-    `rentalConnectionName is : ${collectionName}`,
-    `location is : ${location}`
+    `number of collection is : ${collectionFactoryNum}\n`,
+    `The address of the rentalCollectionFactory contract is : ${rentalCollectionFactoryAddress}\n`,
+    `The address of the rentalCollectionFactory2 contract is : ${rentalCollectionFactory2Address}\n`,
+    `The address of the rentalCollectionFactory3 contract is : ${rentalCollectionFactory3Address}\n`,
+    `rentalCollectionFactory owner is : ${rentalCollectionOwner}\n`,
+    `rentalCollectionFactory2 owner is : ${rentalCollectionOwner2}\n`,
+    `rentalCollectionFactory3 owner is : ${rentalCollectionOwner3}\n`,
+    `The address of the rental1 contract is : ${rentalCollectionAddress}\n`,
+    `The address of the rental1a contract is : ${rentalCollectionAddressa}\n`,
+    `The address of the rental2 contract is : ${rentalCollectionAddress2}\n`,
+    `The address of the rental2a contract is : ${rentalCollectionAddress2a}\n`,
+    `The address of the rental3 contract is : ${rentalCollectionAddress3}\n`,
+    `The address of the rental3a contract is : ${rentalCollectionAddress3a}\n`,
+    `The detail of the RentalCollection1 contract is : ${collectionName}\n`,
+    `The detail of the RentalCollection1a contract is : ${collectionNamea}\n`,
+    `The detail of the RentalCollection2 contract is : ${collectionName2}\n`,
+    `The detail of the RentalCollection2a contract is : ${collectionName2a}\n`,
+    `The detail of the RentalCollection3 contract is : ${collectionName3}\n`,
+    `The detail of the RentalCollection3a contract is : ${collectionName3a}\n`,
+    `Rental periods by renter : ${rentalPeriodsByRenter}\n`,
+    `Rental collection info is : ${rentalInfo}\n`
   );
 }
 
