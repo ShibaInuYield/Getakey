@@ -56,16 +56,34 @@ async function main() {
   const collectionName3 = await RentalCollection3.Rentals([0]);
   const collectionName3a = await RentalCollection3a.Rentals([0]);
 
-  // // set info of rental period
+  //set info of rental period
   
   await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false,false);
   await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false,false);
-  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",true,true);
+  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",false,true);
+  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true,false);
   await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true,true);
-  const rentalPeriodsByRenter = await RentalCollection.getRentalPeriodsByRenter("0x90F79bf6EB2c4f870365E785982E1f101E93b906");
 
-  //get infor about rental
+  //get rentals by address
+  const rentals = await RentalCollection.getRentalPeriodsByAddress("0x90F79bf6EB2c4f870365E785982E1f101E93b906");
+
+  //get rentals by address
+  const numberOfRentals = await rentals.length;
+
+  //get info about rental
   const rentalInfo = await RentalCollection.getRentalPeriodById(1);
+
+  //get info about rental
+  const rentalInfoBeforeBurn = await RentalCollection.getRentalPeriodById(1);
+
+  //burn one token
+  await RentalCollection.burn(1);
+  
+  //get rentals by address
+  const rentalsAfterBurn = await RentalCollection.getRentalPeriodsByAddress("0x90F79bf6EB2c4f870365E785982E1f101E93b906");
+
+  //get rentals by address
+  const numberOfRentalsAfterBurn = await rentalsAfterBurn.length;
 
   console.log(
     `number of collection is : ${collectionFactoryNum}\n`,
@@ -87,8 +105,12 @@ async function main() {
     `The detail of the RentalCollection2a contract is : ${collectionName2a}\n`,
     `The detail of the RentalCollection3 contract is : ${collectionName3}\n`,
     `The detail of the RentalCollection3a contract is : ${collectionName3a}\n`,
-    `Rental periods by renter : ${rentalPeriodsByRenter}\n`,
-    `Rental collection info is : ${rentalInfo}\n`
+    `The number of rentals for this address is : ${numberOfRentals}\n`,
+    `The rentals for this address are : ${rentals}\n`,
+    `The rental information for id 1 is : ${rentalInfo}\n`,
+    `The rental has been destroyed : ${rentalInfoBeforeBurn}\n`,
+    `The rentals for this address are : ${rentalsAfterBurn}\n`,
+    `The number of rentals for this address is : ${numberOfRentalsAfterBurn}\n`,
   );
 }
 

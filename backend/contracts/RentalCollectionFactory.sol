@@ -28,5 +28,4 @@ contract RentalCollectionFactory is Ownable {
     function getRentalCollections() onlyOwner external view returns (address[] memory) {
         return rentalCollections;
     }
-    
 }
