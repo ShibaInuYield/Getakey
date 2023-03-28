@@ -5,7 +5,7 @@ async function main() {
   const RentalCollectionFactory = await hre.ethers.getContractFactory("RentalCollectionFactory");
   const contractJSON = JSON.parse(fs.readFileSync("/home/fab/COURSALYRA/CryptoKey/backend/artifacts/contracts/RentalCollection.sol/RentalCollection.json"));
   const abi = contractJSON.abi;
- 
+
   const signers = await hre.ethers.getSigners();
 
   const rentalCollectionFactory = await RentalCollectionFactory.connect(signers[0]).deploy();
@@ -40,7 +40,7 @@ async function main() {
   const rentalCollectionAddress2a = await rentalCollectionFactory2.rentalCollections([1])
   const rentalCollectionAddress3 = await rentalCollectionFactory3.rentalCollections([0]);
   const rentalCollectionAddress3a = await rentalCollectionFactory3.rentalCollections([1]);
-  
+
   //get rentalCollection contract deployed
   const RentalCollection = new ethers.Contract(rentalCollectionAddress, abi, signers[0]);
   const RentalCollectiona = new ethers.Contract(rentalCollectionAddressa, abi, signers[0]);
@@ -57,12 +57,12 @@ async function main() {
   const collectionName3a = await RentalCollection3a.Rentals([0]);
 
   //set info of rental period
-  
-  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false,false);
-  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false,false);
-  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",false,true);
-  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true,false);
-  await RentalCollection.createRentalPeriod(1679823928,1679824000,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true,true);
+
+  await RentalCollection.createRentalPeriod(1679823928,1679824001,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false,false);
+  await RentalCollection.createRentalPeriod(1679823928,1679824002,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false,false);
+  await RentalCollection.createRentalPeriod(1679823928,1679824003,"0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",false,true);
+  await RentalCollection.createRentalPeriod(1679823928,1679824004,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true,false);
+  await RentalCollection.createRentalPeriod(1679823928,1679824005,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true,true);
 
   //get rentals by address
   const rentals = await RentalCollection.getRentalPeriodsByAddress("0x90F79bf6EB2c4f870365E785982E1f101E93b906");
@@ -78,12 +78,33 @@ async function main() {
 
   //burn one token
   await RentalCollection.burn(1);
-  
+
   //get rentals by address
   const rentalsAfterBurn = await RentalCollection.getRentalPeriodsByAddress("0x90F79bf6EB2c4f870365E785982E1f101E93b906");
 
   //get rentals by address
   const numberOfRentalsAfterBurn = await rentalsAfterBurn.length;
+
+  // get info of rentalPeriod before change renter
+  const rentalPeriodInfoBeforeChangeRenter = await RentalCollection.getRentalPeriodById(3);
+
+  //transfer token to a different wallet
+  await RentalCollection.changeRenter(3,"0x90F79bf6EB2c4f870365E785982E1f101E93b906");
+
+  // get info of rentalPeriod before change renter
+  const rentalPeriodInfoAfterChangeRenter = await RentalCollection.getRentalPeriodById(3);
+
+  //get rentals by address
+  const rentalsAfterChangeRenter = await RentalCollection.getRentalPeriodsByAddress("0x90F79bf6EB2c4f870365E785982E1f101E93b906");
+
+  //get rentals by address
+  const numberOfRentalsAfterChangerenter = await rentalsAfterChangeRenter.length;
+
+  // update rental period
+  await RentalCollection.updateRentalPeriod(3,1679823930,1679824010,true,false)
+
+  // get info of rentalPeriod before change renter
+  const rentalPeriodInfoAfterUpdate = await RentalCollection.getRentalPeriodById(3);
 
   console.log(
     `number of collection is : ${collectionFactoryNum}\n`,
@@ -111,6 +132,11 @@ async function main() {
     `The rental has been destroyed : ${rentalInfoBeforeBurn}\n`,
     `The rentals for this address are : ${rentalsAfterBurn}\n`,
     `The number of rentals for this address is : ${numberOfRentalsAfterBurn}\n`,
+    `The rental info before change renter : ${rentalPeriodInfoBeforeChangeRenter}\n`,
+    `The rental info after change renter : ${rentalPeriodInfoAfterChangeRenter}\n`,
+    `The rentals for this address are : ${rentalsAfterChangeRenter}\n`,
+    `The number of rentals is : ${numberOfRentalsAfterChangerenter}\n`,
+    `The rental period after update : ${rentalPeriodInfoAfterUpdate}\n`,
   );
 }
 

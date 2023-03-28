@@ -24,12 +24,6 @@ contract RentalCollection is ERC721, Ownable {
         bool isPaid;
     }
 
-    struct Renter {
-        address renter;
-        string firstName;
-        string lastName;
-    }
-
     mapping(uint256 => RentalPeriod) private rentalPeriods;
     mapping(uint256 => Rental) public Rentals;
 
@@ -58,7 +52,7 @@ contract RentalCollection is ERC721, Ownable {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
         _safeMint(_msgSender(), newTokenId);
-        rentalPeriods[newTokenId] = RentalPeriod(newTokenId, _startTimestamp , _endTimestamp , walletHash, _rented , _isPaid);
+        rentalPeriods[newTokenId] = RentalPeriod(newTokenId, _startTimestamp , _endTimestamp , walletHash, _isPaid, _rented );
     
         return newTokenId;
     }
@@ -103,4 +97,31 @@ contract RentalCollection is ERC721, Ownable {
         require(rentalPeriods[rentalId].id == rentalId, "Rental does not exist");
     delete rentalPeriods[rentalId];
     }
+
+    function changeRenter(uint256 rentalPeriodId, address renter) external {
+        require(rentalPeriods[rentalPeriodId].id == rentalPeriodId, "Rental does not exist");
+        RentalPeriod memory rentalPeriod = rentalPeriods[rentalPeriodId];
+        bytes32 newRenter = keccak256(abi.encodePacked(renter));
+        require(rentalPeriods[rentalPeriodId].renter != newRenter, "Rental period already belongs to this renter");
+        rentalPeriod.renter = newRenter;
+
+        rentalPeriods[rentalPeriodId] = rentalPeriod;
+    }
+
+    function updateRentalPeriod(uint256 rentalPeriodId, uint256 startTimestamp, uint256 endTimestamp, bool rented, bool isPaid) external {
+        require(rentalPeriods[rentalPeriodId].id == rentalPeriodId, "Rental does not exist");
+        RentalPeriod memory rentalPeriod = rentalPeriods[rentalPeriodId];
+
+        rentalPeriod.startTimestamp = startTimestamp;
+        rentalPeriod.endTimestamp = endTimestamp;
+        rentalPeriod.rented = rented;
+        rentalPeriod.isPaid = isPaid;
+
+        rentalPeriods[rentalPeriodId] = rentalPeriod;
+    }
+
+    // function transferNFT(address to, uint256 tokenId) external {
+    //     require(_isApprovedOrOwner(_msgSender(), tokenId), "Transfer caller is not owner nor approved");
+    // transferFrom(_msgSender(), to, tokenId);
+    // }
 }
