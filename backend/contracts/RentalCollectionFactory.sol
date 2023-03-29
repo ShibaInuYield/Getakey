@@ -18,6 +18,7 @@ contract RentalCollectionFactory is Ownable {
      function createRentalCollection(string memory _rentalName, string memory _rentalSymbol, string memory _location) external returns (address collectionAddress) {
       RentalCollection rentalCollection = new RentalCollection();
       rentalCollection.createRental(_rentalName,_rentalSymbol,_location, msg.sender);
+      rentalCollection.transferOwnership(owner());
       rentalCollections.push(address(rentalCollection));
 
     emit RentalCollectionCreated(_rentalName,_rentalSymbol, collectionAddress, block.timestamp, msg.sender);

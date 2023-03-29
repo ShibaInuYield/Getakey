@@ -87,12 +87,17 @@ async function main() {
 
   // get info of rentalPeriod before change renter
   const rentalPeriodInfoBeforeChangeRenter = await RentalCollection.getRentalPeriodById(3);
+  const ownerOfBeforeTransfer = await RentalCollection.ownerOfToken(3);
 
   //transfer token to a different wallet
+  await RentalCollection.transferNFT("0x90F79bf6EB2c4f870365E785982E1f101E93b906",3);
   await RentalCollection.changeRenter(3,"0x90F79bf6EB2c4f870365E785982E1f101E93b906");
 
-  // get info of rentalPeriod before change renter
+  // get info of rentalPeriod after change renter
   const rentalPeriodInfoAfterChangeRenter = await RentalCollection.getRentalPeriodById(3);
+  const ownerOfAfterTransfert = await RentalCollection.ownerOfToken(3);
+
+  const AddressOwnsnft = await RentalCollection.ownsNFT("0x90F79bf6EB2c4f870365E785982E1f101E93b906",2);
 
   //get rentals by address
   const rentalsAfterChangeRenter = await RentalCollection.getRentalPeriodsByAddress("0x90F79bf6EB2c4f870365E785982E1f101E93b906");
@@ -133,10 +138,13 @@ async function main() {
     `The rentals for this address are : ${rentalsAfterBurn}\n`,
     `The number of rentals for this address is : ${numberOfRentalsAfterBurn}\n`,
     `The rental info before change renter : ${rentalPeriodInfoBeforeChangeRenter}\n`,
+    `The owner of the NFT before transfer is : ${ownerOfBeforeTransfer}\n`,
     `The rental info after change renter : ${rentalPeriodInfoAfterChangeRenter}\n`,
+    `The owner of the NFT after transfer is : ${ownerOfAfterTransfert}\n`,
     `The rentals for this address are : ${rentalsAfterChangeRenter}\n`,
     `The number of rentals is : ${numberOfRentalsAfterChangerenter}\n`,
     `The rental period after update : ${rentalPeriodInfoAfterUpdate}\n`,
+    `Is this addess owns the nft : ${AddressOwnsnft}\n`,
   );
 }
 

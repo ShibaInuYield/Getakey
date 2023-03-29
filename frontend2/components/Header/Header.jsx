@@ -8,6 +8,7 @@ const Header = () => {
             <Text fontWeight="bold">Logo</Text>
             <Flex width="30%" justifyContent="space-between" alignItems="center">
                 <Text><Link href="/">Home</Link></Text>
+                <Text><Link href="/rentals">See rentals</Link></Text>
                 <Text><Link href="/getNumber">Get the number</Link></Text>
                 <Text><Link href="/setNumber">Set the number</Link></Text>
             </Flex>

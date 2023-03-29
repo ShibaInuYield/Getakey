@@ -37,6 +37,11 @@ contract RentalCollection is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter public _tokenIds;
 
+    function transferOwnership(address newOwner) public override onlyOwner {
+            require(newOwner != address(0), "Ownable: new owner is the zero address");
+            _transferOwnership(newOwner);
+    }
+
     function createRental(string memory name, string memory symbol, string memory location, address owner) external onlyOwner {
         Rental storage newCollection = Rentals[0];
         newCollection.owner = owner;
@@ -120,8 +125,16 @@ contract RentalCollection is ERC721, Ownable {
         rentalPeriods[rentalPeriodId] = rentalPeriod;
     }
 
-    // function transferNFT(address to, uint256 tokenId) external {
-    //     require(_isApprovedOrOwner(_msgSender(), tokenId), "Transfer caller is not owner nor approved");
-    // transferFrom(_msgSender(), to, tokenId);
-    // }
+    function ownerOfToken(uint256 _tokenId) external view returns(address){
+        return ownerOf(_tokenId);
+    }
+
+    function transferNFT(address to, uint256 tokenId) external {
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Transfer caller is not owner nor approved");
+    transferFrom(_msgSender(), to, tokenId);
+    }
+
+    function ownsNFT(address wallet, uint256 tokenId) external view returns (bool) {
+        return _isApprovedOrOwner(wallet, tokenId);
+    }
 }
