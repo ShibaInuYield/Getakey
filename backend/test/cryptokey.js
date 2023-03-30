@@ -9,14 +9,14 @@ const fs = require('fs');
 const path = require('path');
 const contractJSON = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../artifacts/contracts/RentalCollection.sol/RentalCollection.json')));
 const abi = contractJSON.abi;
+const { keccak256 } = require('ethereumjs-util');
+const { solidityPack } = require('ethereumjs-abi');
 
 describe("Rental collection factory", function() {
 
   async function deployRentalCollectionFixture() {
-    const weekInSeconds = 7 * 24 * 60 * 60;
-    const rentalEndTime = (await time.latest()) + weekInSeconds;
 
-    const [owner, owner2,  renter1, renter2] = await ethers.getSigners();
+    const [owner, owner2] = await ethers.getSigners();
 
     const RentalCollectionFactory = await ethers.getContractFactory("RentalCollectionFactory");
     const rentalCollectionFactory = await RentalCollectionFactory.deploy();
@@ -24,7 +24,7 @@ describe("Rental collection factory", function() {
 
     RentalCollection = await ethers.getContractFactory("RentalCollection");
 
-    return { rentalCollectionFactory, RentalCollection, rentalEndTime, owner, owner2, renter1, renter2 };
+    return { rentalCollectionFactory, RentalCollection, owner, owner2 };
   }
 
   describe("Deployment contract factory", function () {
@@ -171,7 +171,7 @@ describe("Rental collection factory", function() {
       const rentalCollectionAddress2 = rentalCollections[1];
       const rentalCollection2 = new ethers.Contract(rentalCollectionAddress2, abi, owner);
       expect(await rentalCollection2.owner()).to.equal(owner.address);
-      
+
       const rentalCollectionAddress3 = rentalCollections[2];
       const rentalCollection3 = new ethers.Contract(rentalCollectionAddress3, abi, owner2);
       expect(await rentalCollection3.owner()).to.equal(owner2.address);
@@ -187,7 +187,7 @@ describe("Rental collection factory", function() {
       );
 
       const rentalCollection = await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
-    
+
       await expect(rentalCollection)
         .to.emit(rentalCollectionFactory, "RentalCollectionCreated")
     });
@@ -228,7 +228,12 @@ describe("Rental collection", function() {
 
   async function deployRentalCollectionFixture() {
     const weekInSeconds = 7 * 24 * 60 * 60;
-    const rentalEndTime = (await time.latest()) + weekInSeconds;
+
+    const RentalPeriod = {
+      startTimestamp: 1680196650,
+      endTimestamp: 1680196650 + weekInSeconds,
+      isPaid: true
+    };
 
     // Contracts are deployed using the first signer/account by default
     const [owner, owner2,  renter1, renter2] = await ethers.getSigners();
@@ -236,10 +241,9 @@ describe("Rental collection", function() {
     const RentalCollectionFactory = await ethers.getContractFactory("RentalCollectionFactory");
     const rentalCollectionFactory = await RentalCollectionFactory.deploy();
     await rentalCollectionFactory.deployed();
+    await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
 
-    RentalCollection = await ethers.getContractFactory("RentalCollection");
-
-    return { rentalCollectionFactory, RentalCollection, rentalEndTime, owner, owner2, renter1, renter2 };
+    return { rentalCollectionFactory, RentalPeriod, owner, owner2, renter1, renter2 };
   }
 
   describe("Deployment contract ", function () {
@@ -250,14 +254,6 @@ describe("Rental collection", function() {
         deployRentalCollectionFixture
       );
 
-      // const RentalPeriod = {
-      //   startTimestamp: BN(Date.now()),
-      //   endTimestamp: BN(Date.now() + weekInSeconds),
-      //   isPaid: true,
-      //   rented: false,
-      // };
-      // const rentalCollection = await rentalCollectionFactory.createRentalCollection(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, owner.address, RentalPeriod.isPaid, RentalPeriod.rented);
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address", {from: owner.address});
       const rentalCollections = await rentalCollectionFactory.getRentalCollections();
       const rentalCollectionAddress = rentalCollections[0];
       const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
@@ -271,12 +267,210 @@ describe("Rental collection", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address", {from: owner.address});
       const rentalCollections = await rentalCollectionFactory.getRentalCollections();
       const rentalCollectionAddress = rentalCollections[0];
       const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
 
       expect(await rentalCollection.owner()).to.equal(owner.address);
+    });
+
+    it("Should create a rental collection period", async function () {
+
+      const { rentalCollectionFactory, RentalPeriod,  owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+
+      const rentalPeriod = await rentalCollection.getRentalPeriodById(1);
+      expect(rentalPeriod.id).to.equal(1);
+    });
+
+    it("Should get the correct startTimeStamp", async function () {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await rentalCollection.createRentalPeriod(1680196650, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+
+      const rentalPeriod = await rentalCollection.getRentalPeriodById(1);
+      expect(rentalPeriod.startTimestamp).to.equal(1680196650);
+    });
+
+    it("Should get the correct endTimestamp", async function () {
+
+      const { rentalCollectionFactory, RentalPeriod,  owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+
+      const rentalPeriod = await rentalCollection.getRentalPeriodById(1);
+      expect(rentalPeriod.endTimestamp).to.equal(1680801450);
+    });
+
+    it("Should get the correct address hash", async function () {
+
+      const { rentalCollectionFactory, RentalPeriod,  owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+
+      const rentalPeriod = await rentalCollection.getRentalPeriodById(1);
+      const renter = solidityPack(['address'], [renter1.address]);
+      const hash = keccak256(renter);
+      expect(`0x${hash.toString("hex")}`).to.equal(rentalPeriod.renter);
+    });
+
+    it("Should show if iSPaid", async function () {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+
+      const rentalPeriod = await rentalCollection.getRentalPeriodById(1);
+      expect(rentalPeriod.isPaid).to.true;
+    });
+
+    it("Should show if isRented", async function () {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      const rentalPeriod = await rentalCollection.getRentalPeriodById(1);
+      expect(rentalPeriod.isRented).to.true;
+    });
+
+    it("should mint a new token", async function() {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      expect(await rentalCollection.balanceOf(owner.address)).to.equal(0);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      expect(await rentalCollection.balanceOf(owner.address)).to.equal(1);
+    });
+
+    it("should mint a new token", async function() {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      expect(await rentalCollection.balanceOf(owner.address)).to.equal(0);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      expect(await rentalCollection.balanceOf(owner.address)).to.equal(1);
+    });
+
+    it("Should increment token id", async function() {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      expect(await rentalCollection.tokenId()).to.equal(0);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      expect(await rentalCollection.tokenId()).to.equal(1);
+    });
+
+    it("Should mint a new nft for owner", async function() {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      const ownerofNFT = await rentalCollection.ownerOf(1);
+      expect(ownerofNFT).to.equal(owner.address);
+    });
+
+    it("Should mint a new nft for owner", async function() {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      const ownerofNFT = await rentalCollection.ownerOf(1);
+      expect(ownerofNFT).to.equal(owner.address);
+    });
+
+    it("Should revert if startTimestamp < endTimestamp", async function() {
+
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await expect(rentalCollection.createRentalPeriod(RentalPeriod.endTimestamp,  RentalPeriod.startTimestamp , renter1.address, RentalPeriod.isPaid))
+      .to.be.revertedWith("Invalid rental period");
+    });
+
+    it("Should revert if zero address", async function() {
+
+      const { rentalCollectionFactory, RentalPeriod, owner } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await expect(rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, ethers.constants.AddressZero, RentalPeriod.isPaid))
+      .to.be.revertedWith("Zero address not allowed");
+    });
+
+    it("should emit RentalPeriodCreated event", async function () {
+      const { rentalCollectionFactory, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
+      const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
+      await expect(rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid))
+      .to.emit(rentalCollection, "RentalPeriodCreated")
     });
   });
 });

@@ -26,11 +26,15 @@ module.exports = {
       accounts: [`0x${PRIVATE_KEY}`],
       chainId: 80001
     },
+    // sepolia: {
+    //   url: SEPOLIA_RPC_URL,
+    //   accounts: [`${PRIVATE_KEY}`]
+    // },
     sepolia: {
-      url: SEPOLIA_RPC_URL,
-      accounts: [`0x${PRIVATE_KEY}`],
-      chainId: 11155111,
-    },
+      url: `https://sepolia.infura.io/v3/${process.env.INFURA_ID}`,
+      accounts: [process.env.PRIVATE_KEY || ""],
+      // chainId: 11155111,
+    }
   },
   etherscan: {
     apikey: ETHERSCAN_API_KEY

@@ -20,12 +20,14 @@ contract RentalCollection is ERC721, Ownable {
         uint256 startTimestamp;
         uint256 endTimestamp;
         bytes32 renter;
-        bool rented;
+        bool isRented;
         bool isPaid;
     }
 
     mapping(uint256 => RentalPeriod) private rentalPeriods;
     mapping(uint256 => Rental) public Rentals;
+
+    uint256 public tokenId;
 
     constructor() ERC721("", "") {
 
@@ -35,7 +37,9 @@ contract RentalCollection is ERC721, Ownable {
     }
 
     using Counters for Counters.Counter;
-    Counters.Counter public _tokenIds;
+    Counters.Counter private _tokenIds;
+
+    event RentalPeriodCreated(uint256 startTimestamp, uint256 endTimestamp, address renter, bool isPaid, bool isRented);
 
     function transferOwnership(address newOwner) public override onlyOwner {
             require(newOwner != address(0), "Ownable: new owner is the zero address");
@@ -50,16 +54,19 @@ contract RentalCollection is ERC721, Ownable {
         newCollection.location = location;
     }
 
-    function createRentalPeriod(uint256 _startTimestamp, uint256 _endTimestamp, address _renter, bool _isPaid, bool _rented) external returns (uint256) {
+    function createRentalPeriod(uint256 _startTimestamp, uint256 _endTimestamp, address _renter, bool _isPaid) external onlyOwner returns (uint256) {
         require(_startTimestamp < _endTimestamp, "Invalid rental period");
+        require(_renter != address(0), "Zero address not allowed");
         
         bytes32 walletHash = keccak256(abi.encodePacked(_renter));
         _tokenIds.increment();
-        uint256 newTokenId = _tokenIds.current();
-        _safeMint(_msgSender(), newTokenId);
-        rentalPeriods[newTokenId] = RentalPeriod(newTokenId, _startTimestamp , _endTimestamp , walletHash, _isPaid, _rented );
+        tokenId = _tokenIds.current();
+        _safeMint(_msgSender(), tokenId);
+        bool isRented = true;
+        rentalPeriods[tokenId] = RentalPeriod(tokenId, _startTimestamp , _endTimestamp , walletHash, _isPaid, isRented );
     
-        return newTokenId;
+        emit RentalPeriodCreated(_startTimestamp,_endTimestamp, _renter, _isPaid, isRented);
+        return tokenId;
     }
 
     function getRentalPeriodById(uint256 rentalPeriodId) external view returns (RentalPeriod memory) {
@@ -113,13 +120,13 @@ contract RentalCollection is ERC721, Ownable {
         rentalPeriods[rentalPeriodId] = rentalPeriod;
     }
 
-    function updateRentalPeriod(uint256 rentalPeriodId, uint256 startTimestamp, uint256 endTimestamp, bool rented, bool isPaid) external {
+    function updateRentalPeriod(uint256 rentalPeriodId, uint256 startTimestamp, uint256 endTimestamp, bool isRented, bool isPaid) external {
         require(rentalPeriods[rentalPeriodId].id == rentalPeriodId, "Rental does not exist");
         RentalPeriod memory rentalPeriod = rentalPeriods[rentalPeriodId];
 
         rentalPeriod.startTimestamp = startTimestamp;
         rentalPeriod.endTimestamp = endTimestamp;
-        rentalPeriod.rented = rented;
+        rentalPeriod.isRented = isRented;
         rentalPeriod.isPaid = isPaid;
 
         rentalPeriods[rentalPeriodId] = rentalPeriod;
