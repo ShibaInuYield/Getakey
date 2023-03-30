@@ -42,9 +42,9 @@ contract RentalCollection is ERC721, Ownable {
             _transferOwnership(newOwner);
     }
 
-    function createRental(string memory name, string memory symbol, string memory location, address owner) external onlyOwner {
+    function createRental(string memory name, string memory symbol, string memory location) external onlyOwner {
         Rental storage newCollection = Rentals[0];
-        newCollection.owner = owner;
+        newCollection.owner = msg.sender;
         newCollection.name = name;
         newCollection.symbol = symbol;
         newCollection.location = location;

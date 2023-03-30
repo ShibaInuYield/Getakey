@@ -31,7 +31,7 @@ describe("Rental collection factory", function() {
 
     it("should deploy RentalCollectionCollectionFactory", async function () {
 
-      const { rentalCollectionFactory, owner } = await loadFixture(
+      const { rentalCollectionFactory } = await loadFixture(
         deployRentalCollectionFixture
       );
 
@@ -41,9 +41,39 @@ describe("Rental collection factory", function() {
       expect(rentalCollections.length).to.equal(1);
     });
 
+    it("should fail is rental collection name is empty", async function () {
+
+      const { rentalCollectionFactory } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      await expect(rentalCollectionFactory.createRentalCollection("", "LOC1", "Rental address"))
+      .to.be.revertedWith("Rental name, symbol and location are mendatory");
+    });
+
+    it("should fail is rental collection symbol is empty", async function () {
+
+      const { rentalCollectionFactory } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      await expect(rentalCollectionFactory.createRentalCollection("LOCATION_1", "", "Rental address"))
+      .to.be.revertedWith("Rental name, symbol and location are mendatory");
+    });
+
+    it("should fail is rental collection location is empty", async function () {
+
+      const { rentalCollectionFactory } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      await expect(rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", ""))
+      .to.be.revertedWith("Rental name, symbol and location are mendatory");
+    });
+
     it("should insert rentalCollection in rentalCollections", async function () {
 
-      const { rentalCollectionFactory, owner } = await loadFixture(
+      const { rentalCollectionFactory } = await loadFixture(
         deployRentalCollectionFixture
       );
 
@@ -55,7 +85,7 @@ describe("Rental collection factory", function() {
 
     it("should increment collectionFactoryNum", async function () {
 
-      const { rentalCollectionFactory, owner } = await loadFixture(
+      const { rentalCollectionFactory } = await loadFixture(
         deployRentalCollectionFixture
       );
 
@@ -66,7 +96,7 @@ describe("Rental collection factory", function() {
 
     it("Same lessor should deploy two RentalCollectionCollectionFactories", async function () {
 
-      const { rentalCollectionFactory, owner } = await loadFixture(
+      const { rentalCollectionFactory } = await loadFixture(
         deployRentalCollectionFixture
       );
 
@@ -78,7 +108,7 @@ describe("Rental collection factory", function() {
 
     it("Different lessors should deploy one RentalCollectionCollectionFactory", async function () {
 
-      const { rentalCollectionFactory, owner, owner2 } = await loadFixture(
+      const { rentalCollectionFactory, owner2 } = await loadFixture(
         deployRentalCollectionFixture
       );
 
@@ -111,11 +141,11 @@ describe("Rental collection factory", function() {
       await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_2", "LOC2", "Rental address 2");
       const rentalCollections = await rentalCollectionFactory.getRentalCollections();
 
-      const rentalCollectionAddress = await rentalCollectionFactory.rentalCollections([0]);
+      const rentalCollectionAddress = rentalCollections[0];
       const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
       expect(await rentalCollection.owner()).to.equal(owner.address);
 
-      const rentalCollectionAddress2 = await rentalCollectionFactory.rentalCollections([1]);
+      const rentalCollectionAddress2 = rentalCollections[1];
       const rentalCollection2 = new ethers.Contract(rentalCollectionAddress2, abi, owner2);
       expect(await rentalCollection2.owner()).to.equal(owner2.address);
     });
@@ -134,19 +164,19 @@ describe("Rental collection factory", function() {
 
       expect(rentalCollections.length).to.equal(4);
 
-      const rentalCollectionAddress = await rentalCollectionFactory.rentalCollections([0]);
+      const rentalCollectionAddress = rentalCollections[0];
       const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
       expect(await rentalCollection.owner()).to.equal(owner.address);
 
-      const rentalCollectionAddress2 = await rentalCollectionFactory.rentalCollections([1]);
+      const rentalCollectionAddress2 = rentalCollections[1];
       const rentalCollection2 = new ethers.Contract(rentalCollectionAddress2, abi, owner);
       expect(await rentalCollection2.owner()).to.equal(owner.address);
       
-      const rentalCollectionAddress3 = await rentalCollectionFactory.rentalCollections([2]);
+      const rentalCollectionAddress3 = rentalCollections[2];
       const rentalCollection3 = new ethers.Contract(rentalCollectionAddress3, abi, owner2);
       expect(await rentalCollection3.owner()).to.equal(owner2.address);
 
-      const rentalCollectionAddress4 = await rentalCollectionFactory.rentalCollections([3]);
+      const rentalCollectionAddress4 = rentalCollections[3];
       const rentalCollection4 = new ethers.Contract(rentalCollectionAddress4, abi, owner2);
       expect(await rentalCollection4.owner()).to.equal(owner2.address);
     });
@@ -228,7 +258,8 @@ describe("Rental collection", function() {
       // };
       // const rentalCollection = await rentalCollectionFactory.createRentalCollection(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, owner.address, RentalPeriod.isPaid, RentalPeriod.rented);
       await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address", {from: owner.address});
-      const rentalCollectionAddress = await rentalCollectionFactory.rentalCollections([0]);
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
       const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
 
       expect(rentalCollection.address).to.not.equal(ethers.constants.AddressZero);
@@ -241,7 +272,8 @@ describe("Rental collection", function() {
       );
 
       await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address", {from: owner.address});
-      const rentalCollectionAddress = await rentalCollectionFactory.rentalCollections([0]);
+      const rentalCollections = await rentalCollectionFactory.getRentalCollections();
+      const rentalCollectionAddress = rentalCollections[0];
       const rentalCollection = new ethers.Contract(rentalCollectionAddress, abi, owner);
 
       expect(await rentalCollection.owner()).to.equal(owner.address);
