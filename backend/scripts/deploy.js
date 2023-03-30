@@ -1,9 +1,10 @@
 const fs = require('fs');
+const path = require('path');
 const hre = require("hardhat");
 
 async function main() {
   const RentalCollectionFactory = await hre.ethers.getContractFactory("RentalCollectionFactory");
-  const contractJSON = JSON.parse(fs.readFileSync("/home/fab/COURSALYRA/CryptoKey/backend/artifacts/contracts/RentalCollection.sol/RentalCollection.json"));
+  const contractJSON = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../artifacts/contracts/RentalCollection.sol/RentalCollection.json')));
   const abi = contractJSON.abi;
 
   const signers = await hre.ethers.getSigners();

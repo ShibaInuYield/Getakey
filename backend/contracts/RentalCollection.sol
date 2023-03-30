@@ -137,4 +137,8 @@ contract RentalCollection is ERC721, Ownable {
     function ownsNFT(address wallet, uint256 tokenId) external view returns (bool) {
         return _isApprovedOrOwner(wallet, tokenId);
     }
+
+    receive() external payable{}
+
+    fallback() external payable {}
 }
