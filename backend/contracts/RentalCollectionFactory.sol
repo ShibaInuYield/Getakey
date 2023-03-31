@@ -16,10 +16,10 @@ contract RentalCollectionFactory is Ownable {
       require(bytes(_rentalName).length > 0 && bytes(_rentalSymbol).length > 0 && bytes(_location).length > 0,"Rental name, symbol and location are mendatory");
       
       RentalCollection rentalCollection = new RentalCollection();
-      rentalCollection.createRental(_rentalName,_rentalSymbol,_location);
+      collectionFactoryNum++;
+      rentalCollection.createRental(_rentalName, _rentalSymbol, _location, collectionAddress, collectionFactoryNum);
       rentalCollection.transferOwnership(msg.sender);
       rentalCollections.push(address(rentalCollection));
-      collectionFactoryNum++;
 
       emit RentalCollectionCreated(_rentalName,_rentalSymbol, collectionAddress, block.timestamp);
         return address(rentalCollection);
