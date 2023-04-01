@@ -3,12 +3,13 @@ pragma solidity 0.8.18;
  
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "./RentalCollection.sol";
+import "hardhat/console.sol";
  
 contract RentalCollectionFactory is Ownable {
  
    event RentalCollectionCreated(string _rentalName,string _rentalSymbol, address _collectionAddress, uint _timestamp);
 
-    address[] private rentalCollections;
+     mapping(address => address[]) public lessorToContractAddress;
 
     uint256 public collectionFactoryNum;
 
@@ -17,16 +18,16 @@ contract RentalCollectionFactory is Ownable {
       
       RentalCollection rentalCollection = new RentalCollection();
       collectionFactoryNum++;
-      rentalCollection.createRental(_rentalName, _rentalSymbol, _location, collectionAddress, collectionFactoryNum);
+      rentalCollection.createRental(_rentalName, _rentalSymbol, _location, collectionAddress, collectionFactoryNum,msg.sender);
       rentalCollection.transferOwnership(msg.sender);
-      rentalCollections.push(address(rentalCollection));
+      lessorToContractAddress[msg.sender].push(address(rentalCollection));
 
       emit RentalCollectionCreated(_rentalName,_rentalSymbol, collectionAddress, block.timestamp);
         return address(rentalCollection);
     }
 
-    function getRentalCollections() onlyOwner external view returns (address[] memory) {
-        return rentalCollections;
+    function getRentalCollections(address contractOwner) onlyOwner external view returns (address[] memory) {
+        return lessorToContractAddress[contractOwner];
     }
 
     receive() external payable{}
