@@ -462,7 +462,7 @@ describe("Rental collection", function() {
       .to.be.revertedWith("No rental");
     });
 
-    it("should mint a new token", async function() {
+    it("should mint a new nft", async function() {
 
       const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(
         deployRentalCollectionFixture
@@ -560,9 +560,9 @@ describe("Rental collection", function() {
 
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp2, RentalPeriod.endTimestamp2, renter1.address, RentalPeriod.isPaid);
-      tokenOfOwner = await rentalCollection.getAllTokenIds(owner.address);
-      expect(tokenOfOwner[0]).to.equal(1);
-      expect(tokenOfOwner[1]).to.equal(2);
+      nftOfOwner = await rentalCollection.getAllNftIds(owner.address);
+      expect(nftOfOwner[0]).to.equal(1);
+      expect(nftOfOwner[1]).to.equal(2);
     });
 
     it("Should burn a nft", async function() {
@@ -574,11 +574,11 @@ describe("Rental collection", function() {
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp2, RentalPeriod.endTimestamp2, renter1.address, RentalPeriod.isPaid);
 
-      let tokenOfOwner = await rentalCollection.getAllTokenIds(owner.address);
-      expect(tokenOfOwner[1]).is.equal(2); 
+      let nftOfOwner = await rentalCollection.getAllNftIds(owner.address);
+      expect(nftOfOwner[1]).is.equal(2); 
       await rentalCollection.burn(owner.address, RentalPeriod.rentalId,2);
-      tokenOfOwner = await rentalCollection.getAllTokenIds(owner.address);
-      expect(tokenOfOwner[1]).is.equal(0); 
+      nftOfOwner = await rentalCollection.getAllNftIds(owner.address);
+      expect(nftOfOwner[1]).is.equal(0); 
     });
 
     it("should emit NftBurned event", async function () {
@@ -601,8 +601,8 @@ describe("Rental collection", function() {
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp2, RentalPeriod.endTimestamp2, renter1.address, RentalPeriod.isPaid);
 
-      let tokenOfOwner = await rentalCollection.getAllTokenIds(owner.address);
-      expect(tokenOfOwner[1]).is.equal(2); 
+      let nftOfOwner = await rentalCollection.getAllNftIds(owner.address);
+      expect(nftOfOwner[1]).is.equal(2); 
       await expect(rentalCollection.burn(renter1.address, RentalPeriod.rentalId,2))
       .to.be.revertedWith("Address provided is not the owner");
     });
@@ -616,29 +616,29 @@ describe("Rental collection", function() {
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp2, RentalPeriod.endTimestamp2, renter1.address, RentalPeriod.isPaid);
 
-      let tokenOfOwner = await rentalCollection.getAllTokenIds(owner.address);
-      expect(tokenOfOwner[1]).is.equal(2); 
+      let nftOfOwner = await rentalCollection.getAllNftIds(owner.address);
+      expect(nftOfOwner[1]).is.equal(2); 
       await expect(rentalCollection.burn(owner.address, RentalPeriod.rentalId,3))
       .to.be.revertedWith("ERC721: invalid token ID");
     });
 
-    it("Should revert when get all token if zero address", async function () {
+    it("Should revert when get all nft if zero address", async function () {
 
       const { rentalCollection } = await loadFixture(
         deployRentalCollectionFixture
       );
 
-      await expect(rentalCollection.getAllTokenIds(ethers.constants.AddressZero))
+      await expect(rentalCollection.getAllNftIds(ethers.constants.AddressZero))
       .to.be.revertedWith("Address zero is forbidden");
     });
 
-    it("Should revert when gat all token if owner has no rental", async function () {
+    it("Should revert when gat all nft if owner has no rental", async function () {
 
       const { rentalCollection, renter1 } = await loadFixture(
         deployRentalCollectionFixture
       );
 
-      await expect(rentalCollection.getAllTokenIds(renter1.address))
+      await expect(rentalCollection.getAllNftIds(renter1.address))
       .to.be.revertedWith("No rental id for this address");
     });
 
@@ -757,7 +757,7 @@ describe("Rental collection", function() {
       .to.be.revertedWith("Invalid address");
     });
 
-    it("Should revert if not owner of token", async function() {
+    it("Should revert if not owner of nft", async function() {
 
       const { rentalCollection, RentalPeriod, renter1, renter2 } = await loadFixture(
         deployRentalCollectionFixture
@@ -766,7 +766,7 @@ describe("Rental collection", function() {
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter2.address, RentalPeriod.isPaid);
       
       await expect(rentalCollection.connect(renter2).transferNFT(renter1.address, RentalPeriod.nftId))
-      .to.be.revertedWith("Caller is not owner");
+      .to.be.revertedWith("Ownable: caller is not the owner");
     });
 
     it("Should control access", async function() {
@@ -808,7 +808,7 @@ describe("Rental collection", function() {
       .to.be.revertedWith("Invalid address");
     });
 
-    it("Should fail if not token owner after transfert", async function() {
+    it("Should fail if not nft owner after transfert", async function() {
 
       const { rentalCollection, RentalPeriod, renter1, renter2 } = await loadFixture(
         deployRentalCollectionFixture
