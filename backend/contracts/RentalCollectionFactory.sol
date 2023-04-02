@@ -7,13 +7,25 @@ import "hardhat/console.sol";
  
 contract RentalCollectionFactory is Ownable {
  
+  struct Rental {
+    string name;
+    string symbol;
+    string location;
+  }
+
    event RentalCollectionCreated(string _rentalName,string _rentalSymbol, address _collectionAddress, uint _timestamp);
 
-     mapping(address => address[]) public lessorToContractAddress;
+    mapping(address => address[]) public lessorToContractAddress;
+    mapping(string => Rental) rentalNames;
 
     uint256 public collectionFactoryNum;
 
-    function createRentalCollection(string memory _rentalName, string memory _rentalSymbol, string memory _location) external returns (address collectionAddress) {
+    modifier rentalNameDoesNotExist(string memory _rentalName) {
+    require(bytes32(abi.encodePacked(rentalNames[_rentalName].name)) == "", "Rental name already exists");
+    _;
+    }
+
+    function createRentalCollection(string memory _rentalName, string memory _rentalSymbol, string memory _location) external rentalNameDoesNotExist(_rentalName) returns (address collectionAddress) {
       require(bytes(_rentalName).length > 0 && bytes(_rentalSymbol).length > 0 && bytes(_location).length > 0,"Rental name, symbol and location are mendatory");
       
       RentalCollection rentalCollection = new RentalCollection();
@@ -21,6 +33,7 @@ contract RentalCollectionFactory is Ownable {
       rentalCollection.createRental(_rentalName, _rentalSymbol, _location, collectionAddress, collectionFactoryNum,msg.sender);
       rentalCollection.transferOwnership(msg.sender);
       lessorToContractAddress[msg.sender].push(address(rentalCollection));
+      rentalNames[_rentalName] = Rental({ name: _rentalName, symbol: _rentalSymbol, location: _location });
 
       emit RentalCollectionCreated(_rentalName,_rentalSymbol, collectionAddress, block.timestamp);
         return address(rentalCollection);
