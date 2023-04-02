@@ -32,11 +32,11 @@ contract RentalCollection is ERC721, Ownable {
 
     mapping(address => uint256[]) public ownerToRentals;
 
-    constructor() ERC721("", "") {
-    }
-
     using Counters for Counters.Counter;
     Counters.Counter nftIds;
+
+    constructor() ERC721("","") {
+    }
 
     event RentalPeriodCreated(uint256 startTimestamp, uint256 endTimestamp, address renter, bool isPaid, bool isRented);
     event NftBurned(address owner, uint256 rentalId,uint256 nftId);
@@ -44,15 +44,17 @@ contract RentalCollection is ERC721, Ownable {
     event NftTransfered(address to,uint256 nftId,address msgSender);
     event NftControlled(address renter,uint256 nftId, address msgSender); 
 
-    function createRental(string memory _name, string memory _symbol, string memory _location, address _rentalCollectionAddress, uint _id, address owner) external onlyOwner {
+    function createRental(string memory name, string memory symbol, string memory _location, address _rentalCollectionAddress, uint _id, address _owner) external onlyOwner {
+        _name= name;
+        _symbol= symbol;
         Rental storage newCollection = Rentals[_id];
-        newCollection.owner = owner;
+        newCollection.owner = _owner;
         newCollection.rentalCollectionAddress = _rentalCollectionAddress;
-        newCollection.name = _name;
-        newCollection.symbol = _symbol;
+        newCollection.name = name;
+        newCollection.symbol = symbol;
         newCollection.location = _location;
         newCollection.nftId = 1;
-        ownerToRentals[owner].push(_id);
+        ownerToRentals[_owner].push(_id);
     }
 
     function createRentalPeriod(uint256 _rentalID, uint256 _startTimestamp, uint256 _endTimestamp, address _renter, bool _isPaid) external onlyOwner returns (uint256) {
@@ -99,13 +101,13 @@ contract RentalCollection is ERC721, Ownable {
         isPaid = rentalPeriod.isPaid;
     }
 
-    function getOwnerRentals(address _owner) public view onlyOwner returns (uint256[] memory) {   
+    function getOwnerRentals(address _owner) public view returns (uint256[] memory) {   
         require(_owner != address(0),"Address zero is forbidden");
         require(ownerToRentals[_owner].length > 0 && ownerToRentals[_owner][0] != 0,"No rental");
         return ownerToRentals[_owner];
     }
 
-    function getAllNftIds(address _owner) external view onlyOwner returns (uint256[] memory) {
+    function getAllNftIds(address _owner) external view returns (uint256[] memory) {
         require(_owner != address(0), "Address zero is forbidden");
         require(ownerToRentals[_owner].length > 0 && ownerToRentals[_owner][0] != 0, "No rental id for this address");
 
