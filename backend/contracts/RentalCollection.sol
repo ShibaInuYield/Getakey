@@ -38,7 +38,11 @@ contract RentalCollection is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter tokenIds;
 
-    event RentalPeriodCreated(uint256 startTimestamp, uint256 endTimestamp, address renter, bool isPaid, bool isRented); 
+    event RentalPeriodCreated(uint256 startTimestamp, uint256 endTimestamp, address renter, bool isPaid, bool isRented);
+    event NftBurned(address owner, uint256 rentalId,uint256 tokenId);
+    event RenterChanged(uint256 rentalID,uint256 nftId, address newRenter);
+    event NftTransfered(address to,uint256 nftId,address msgSender);
+    event NftControlled(address renter,uint256 tokenId, address msgSender); 
 
     function createRental(string memory _name, string memory _symbol, string memory _location, address _rentalCollectionAddress, uint _id, address owner) external onlyOwner {
         Rental storage newCollection = Rentals[_id];
@@ -131,6 +135,8 @@ contract RentalCollection is ERC721, Ownable {
         require(_isApprovedOrOwner(_owner, _tokenId), "Address provided is not the owner");
         _burn(_tokenId);
         delete rentalToPeriods[_rentalId][_tokenId -1];
+
+        emit NftBurned(_owner, _rentalId, _tokenId);
     }
 
     function changeRenter(uint256 _rentalID, uint256 _nftId, address _newRenter) external onlyOwner {
@@ -144,6 +150,8 @@ contract RentalCollection is ERC721, Ownable {
         bytes32 renter = keccak256(abi.encodePacked(_newRenter));
         require(rentalToPeriods[_rentalID][_nftId -1].renter != renter, "Rental period already belongs to this renter");
         rentalPeriod.renter = renter;
+
+        emit RenterChanged(_rentalID,_nftId, _newRenter);
     }
 
     function transferNFT(address _to, uint256 _tokenId) external {
@@ -151,14 +159,25 @@ contract RentalCollection is ERC721, Ownable {
         require(_isApprovedOrOwner(_msgSender(), _tokenId), "Caller is not owner");
         safeTransferFrom(_msgSender(), _to, _tokenId);
         require(ownerOf(_tokenId) == _to, "Token not transfered");
+
+        emit NftTransfered(_to, _tokenId, msg.sender);
     }
 
-    function controlNFT(address _renter, uint _tokenId) external view returns (bool accessGranted){
+   function controlNFT(address _renter, uint _tokenId) external returns (bool accessGranted){
         require(_renter != address(0), "Invalid address");
-        accessGranted = false;
         require(_isApprovedOrOwner(_renter, _tokenId), "Renter address unknown");
+        emit NftControlled(_renter,_tokenId, msg.sender);
         return accessGranted = true;
     }
+
+    //  function controlNFT(address _renter, uint _tokenId) external returns (bool accessGranted){
+    //     require(_renter != address(0), "Invalid address");
+    //     bool accessGranted = false;
+    //     require(_isApprovedOrOwner(_renter, _tokenId), "Renter address unknown");
+    //     emit NftControlled(_renter,_tokenId, msg.sender);
+    //     accessGranted = true;
+    //     return accessGranted;
+    // }
 
     receive() external payable{}
 }

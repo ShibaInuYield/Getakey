@@ -565,7 +565,7 @@ describe("Rental collection", function() {
       expect(tokenOfOwner[1]).to.equal(2);
     });
 
-    it("Can burn a token", async function() {
+    it("Should burn a nft", async function() {
 
       const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(
         deployRentalCollectionFixture
@@ -579,6 +579,17 @@ describe("Rental collection", function() {
       await rentalCollection.burn(owner.address, RentalPeriod.rentalId,2);
       tokenOfOwner = await rentalCollection.getAllTokenIds(owner.address);
       expect(tokenOfOwner[1]).is.equal(0); 
+    });
+
+    it("should emit NftBurned event", async function () {
+      const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+
+      await expect(rentalCollection.burn(owner.address, RentalPeriod.rentalId,RentalPeriod.nftId))
+      .to.emit(rentalCollection, "NftBurned")
     });
 
     it("Should revert when address is not the owner", async function() {
@@ -645,6 +656,18 @@ describe("Rental collection", function() {
       const hash = keccak256(renter);
       expect(`0x${hash.toString("hex")}`).to.equal(rentalPeriod.renter);
     });
+
+    it("Could change renter", async function() {
+
+      const { rentalCollection, RentalPeriod, renter1, renter2 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter2.address, RentalPeriod.isPaid);
+      
+      expect(await rentalCollection.changeRenter(RentalPeriod.rentalId,RentalPeriod.nftId, renter1.address))
+      .to.emit(rentalCollection, "RenterChanged");
+    });
  
     it("Should revert if address zero", async function() {
 
@@ -710,6 +733,18 @@ describe("Rental collection", function() {
       expect(`0x${hash.toString("hex")}`).to.equal(rentalPeriod.renter);
     });
 
+    it("Should emit nft transfered", async function() {
+
+      const { rentalCollection, RentalPeriod,owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      
+      expect(await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId))
+      .to.emit(rentalCollection, "NftTransfered");
+    });
+
     it("Should revert if address zero", async function() {
 
       const { rentalCollection, RentalPeriod, renter2 } = await loadFixture(
@@ -736,15 +771,15 @@ describe("Rental collection", function() {
 
     it("Should control access", async function() {
 
-      const { rentalCollection, RentalPeriod, renter1 } = await loadFixture(
+      const { rentalCollection, RentalPeriod,owner, renter1 } = await loadFixture(
         deployRentalCollectionFixture
       );
 
       await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       
       await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId);
-      const accessGranted = await rentalCollection.controlNFT(renter1.address, RentalPeriod.nftId);
-      expect(accessGranted).to.true;
+      expect(await rentalCollection.controlNFT(renter1.address, RentalPeriod.nftId))
+      .to.emit(rentalCollection, "NftControlled");
     });
 
     it("should revert if not good renter", async function() {
