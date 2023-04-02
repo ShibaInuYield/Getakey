@@ -73,6 +73,7 @@ contract RentalCollection is ERC721, Ownable {
     }
 
     function getRental(uint256 _rentalID) external view returns (address owner, address rentalCollectionAddress, string memory name, string memory symbol, string memory location, uint256 tokenId) {
+        require( bytes32(abi.encodePacked(Rentals[_rentalID].owner)) != "", "Rental id does not exist");
         Rental memory rental = Rentals[_rentalID];
         owner = rental.owner;
         rentalCollectionAddress = rental.rentalCollectionAddress;
@@ -94,11 +95,16 @@ contract RentalCollection is ERC721, Ownable {
         isPaid = rentalPeriod.isPaid;
     }
 
-    function getOwnerRentals(address _owner) public view returns (uint256[] memory) {
+    function getOwnerRentals(address _owner) public view returns (uint256[] memory) {   
+        require(_owner != address(0),"Address zero is forbidden");
+        require(ownerToRentals[_owner].length > 0 && ownerToRentals[_owner][0] != 0,"No rental");
         return ownerToRentals[_owner];
     }
 
     function getAllTokenIds(address _owner) external view returns (uint256[] memory) {
+        require(_owner != address(0), "Address zero is forbidden");
+        require(ownerToRentals[_owner].length > 0 && ownerToRentals[_owner][0] != 0, "No rental id for this address");
+
         uint256 totalTokens = 0;
 
         uint256[] memory rentals = ownerToRentals[_owner];
@@ -121,9 +127,8 @@ contract RentalCollection is ERC721, Ownable {
         return nftIds;
     }
 
-    function burn(uint256 _rentalId,uint256 _tokenId) external {
-        require(_isApprovedOrOwner(_msgSender(), _tokenId), "Caller is not owner nor approved");
-        require(_exists(_tokenId), "Token does not exist");
+    function burn(address _owner, uint256 _rentalId,uint256 _tokenId) external {
+        require(_isApprovedOrOwner(_owner, _tokenId), "Address provided is not the owner");
         _burn(_tokenId);
         delete rentalToPeriods[_rentalId][_tokenId -1];
     }
@@ -131,8 +136,10 @@ contract RentalCollection is ERC721, Ownable {
     function changeRenter(uint256 _rentalID, uint256 _nftId, address _newRenter) external onlyOwner {
         require(_newRenter != address(0), "Invalid address");
 
+        require(_rentalID > 0, "Rental does not exist");
+        require(_nftId > 0 && _nftId <= rentalToPeriods[_rentalID].length, "nft id not valid");
+
         RentalPeriod storage rentalPeriod = rentalToPeriods[_rentalID][_nftId -1];
-        require(rentalPeriod.isRented, "Rental period is not rented");
 
         bytes32 renter = keccak256(abi.encodePacked(_newRenter));
         require(rentalToPeriods[_rentalID][_nftId -1].renter != renter, "Rental period already belongs to this renter");
@@ -140,19 +147,18 @@ contract RentalCollection is ERC721, Ownable {
     }
 
     function transferNFT(address _to, uint256 _tokenId) external {
-        require(_isApprovedOrOwner(_msgSender(), _tokenId), "Transfer caller is not owner nor approved");
+        require(_to != address(0), "Invalid address");
+        require(_isApprovedOrOwner(_msgSender(), _tokenId), "Caller is not owner");
         safeTransferFrom(_msgSender(), _to, _tokenId);
         require(ownerOf(_tokenId) == _to, "Token not transfered");
     }
 
     function controlNFT(address _renter, uint _tokenId) external view returns (bool accessGranted){
-     accessGranted = false;
-     require(_isApprovedOrOwner(_renter, _tokenId), "Renter address unknown");
-     _isApprovedOrOwner(_renter, _tokenId);
-     return accessGranted = true;
+        require(_renter != address(0), "Invalid address");
+        accessGranted = false;
+        require(_isApprovedOrOwner(_renter, _tokenId), "Renter address unknown");
+        return accessGranted = true;
     }
 
     receive() external payable{}
-
-    fallback() external payable {}
 }
