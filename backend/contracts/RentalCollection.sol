@@ -18,6 +18,7 @@ contract RentalCollection is ERC721, Ownable {
     }
 
     struct RentalPeriod {
+        uint256 rentalId;
         uint256 nftId;
         uint256 startTimestamp;
         uint256 endTimestamp;
@@ -72,7 +73,7 @@ contract RentalCollection is ERC721, Ownable {
         _safeMint(_msgSender(), nftId);
         bool isRented = true;
 
-        rentalToPeriods[_rentalID].push(RentalPeriod(nftId, _startTimestamp , _endTimestamp , walletHash, isRented, _isPaid));
+        rentalToPeriods[_rentalID].push(RentalPeriod(_rentalID, nftId, _startTimestamp , _endTimestamp , walletHash, isRented, _isPaid));
 
         emit RentalPeriodCreated(_startTimestamp,_endTimestamp, _renter, _isPaid, isRented);
         return nftId;
@@ -89,10 +90,11 @@ contract RentalCollection is ERC721, Ownable {
         nftId = rental.nftId;
     }
 
-    function getRentalPeriod(uint256 _rentalID, uint _nftId) external view returns (uint256 nftId, uint256 startTimestamp, uint256 endTimestamp, bytes32 renter, bool isRented, bool isPaid) {
-        require(_rentalID > 0, "Rental does not exist");
+    function getRentalPeriod(uint256 _rentalId, uint _nftId) external view returns (uint256 rentalId, uint256 nftId, uint256 startTimestamp, uint256 endTimestamp, bytes32 renter, bool isRented, bool isPaid) {
+        require(_rentalId > 0, "Rental does not exist");
         
-        RentalPeriod memory rentalPeriod = rentalToPeriods[_rentalID][_nftId -1];
+        RentalPeriod memory rentalPeriod = rentalToPeriods[_rentalId][_nftId -1];
+        rentalId = rentalPeriod.rentalId;
         nftId = rentalPeriod.nftId;
         startTimestamp = rentalPeriod.startTimestamp;
         endTimestamp = rentalPeriod.endTimestamp;
