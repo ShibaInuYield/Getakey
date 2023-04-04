@@ -6,10 +6,10 @@ const Header = () => {
     return (
         <Flex justifyContent="space-between" alignItems="center" height="10vh" width="100%" p="2rem">
             <Text fontWeight="bold">Logo</Text>
-            <Flex width="30%" justifyContent="space-between" alignItems="center">
+            <Flex width="50%" justifyContent="space-between" alignItems="center">
                 <Text><Link href="/">Home</Link></Text>
+                <Text><Link href="/createRental">Create rental</Link></Text>
                 <Text><Link href="/rentals">See rentals</Link></Text>
-                <Text><Link href="/getNumber">Get the number</Link></Text>
                 <Text><Link href="/setNumber">Set the number</Link></Text>
             </Flex>
             <ConnectButton />

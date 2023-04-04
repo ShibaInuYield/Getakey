@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { ethers } from 'ethers'
 import { contractAddress, abi } from "../public/constants"
 
-export default function getTheNumber() {
+export default function createRental() {
 
   const { isConnected } = useAccount()
   const provider = useProvider()
