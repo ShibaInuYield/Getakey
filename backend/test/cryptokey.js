@@ -438,28 +438,8 @@ describe("Rental collection", function() {
         deployRentalCollectionFixture
       );
 
-      const ownerRentals = await rentalCollection.getOwnerRentals(owner.address);
+      const ownerRentals = await rentalCollection.getOwnerRentals();
       expect(ownerRentals[0]).to.equal(1);
-    });
-
-    it("Should revert if zero address", async function () {
-
-      const { rentalCollection, } = await loadFixture(
-        deployRentalCollectionFixture
-      );
-
-      await expect(rentalCollection.getOwnerRentals(ethers.constants.AddressZero))
-      .to.be.revertedWith("Address zero is forbidden");
-    });
-
-    it("Should revert if owner has no rental", async function () {
-
-      const { rentalCollection, renter1 } = await loadFixture(
-        deployRentalCollectionFixture
-      );
-
-      await expect(rentalCollection.getOwnerRentals(renter1.address))
-      .to.be.revertedWith("No rental");
     });
 
     it("should mint a new nft", async function() {

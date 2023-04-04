@@ -103,10 +103,9 @@ contract RentalCollection is ERC721, Ownable {
         isPaid = rentalPeriod.isPaid;
     }
 
-    function getOwnerRentals(address _owner) public view returns (uint256[] memory) {   
-        require(_owner != address(0),"Address zero is forbidden");
-        require(ownerToRentals[_owner].length > 0 && ownerToRentals[_owner][0] != 0,"No rental");
-        return ownerToRentals[_owner];
+    function getOwnerRentals() public view onlyOwner returns (uint256[] memory) {   
+        require(ownerToRentals[msg.sender].length > 0 && ownerToRentals[msg.sender][0] != 0,"No rental");
+        return ownerToRentals[msg.sender];
     }
 
     function getAllNftIds(address _owner) external view returns (uint256[] memory) {

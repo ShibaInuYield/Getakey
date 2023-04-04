@@ -36,10 +36,10 @@ contract RentalCollectionFactory is Ownable {
       rentalNames[_rentalName] = Rental({ name: _rentalName, symbol: _rentalSymbol, location: _location });
 
       emit RentalCollectionCreated(_rentalName,_rentalSymbol, collectionAddress, block.timestamp);
-        return address(collectionAddress);
+        return address(rentalCollection);
     }
 
-    function getRentalCollections(address contractOwner) onlyOwner external view returns (address[] memory) {
+    function getRentalCollections(address contractOwner) external view returns (address[] memory) {
         return lessorToContractAddress[contractOwner];
     }
 

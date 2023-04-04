@@ -14,8 +14,8 @@ function UploadButton() {
     formData.append('name', 'File name');
     formData.append('cidVersion', 0);
 
-    const API_KEY = 'YOUR_API_KEY';
-    const API_SECRET = 'YOUR_API_SECRET';
+    const API_KEY = `ba7982d3d1680b7fff21`
+    const API_SECRET = `15bcc356dfa03f63dcbf6e59b7dbd88c1dbb703583733e15cafa7d107fbea86c`
 
     try {
       // Send a POST request to upload the file
