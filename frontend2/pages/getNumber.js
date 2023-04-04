@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ethers } from 'ethers'
-import { contractAddress, abi } from "../public/constants"
+import { contractAddress, abi } from "../public/constants/factory"
 
 export default function createRental() {
 
