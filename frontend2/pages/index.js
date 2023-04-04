@@ -6,6 +6,8 @@ import {
   Alert,
   AlertIcon,
 } from '@chakra-ui/react'
+import Upload from '@/components/Upload'
+import Mint from '@/components/Mint'
 
 export default function Home() {
 
@@ -28,6 +30,7 @@ export default function Home() {
             Please, connect your Wallet!
           </Alert>
         )}
+       <Mint/>
       </Layout>
     </>
   )

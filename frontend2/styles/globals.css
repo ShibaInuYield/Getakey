@@ -105,3 +105,11 @@ a {
     color-scheme: dark;
   }
 }
+
+.rental{
+  margin:1rem;
+}
+.rentalImg{
+  border-radius: 30px;
+  width:400px;
+}
