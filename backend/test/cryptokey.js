@@ -36,7 +36,7 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       expect(rentalCollectionFactory.address).to.not.equal(ethers.constants.AddressZero);
       const rentalCollections = await rentalCollectionFactory.getRentalCollections(owner.address);
       expect(rentalCollections.length).to.equal(1);
@@ -48,7 +48,7 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await expect(rentalCollectionFactory.createRentalCollection("", "LOC1", "Rental address"))
+      await expect(rentalCollectionFactory.createRentalCollection("", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8"))
       .to.be.revertedWith("Rental name, symbol and location are mendatory");
     });
 
@@ -58,7 +58,7 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await expect(rentalCollectionFactory.createRentalCollection("LOCATION_1", "", "Rental address"))
+      await expect(rentalCollectionFactory.createRentalCollection("LOCATION_1", "", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8"))
       .to.be.revertedWith("Rental name, symbol and location are mendatory");
     });
 
@@ -68,7 +68,7 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await expect(rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", ""))
+      await expect(rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8"))
       .to.be.revertedWith("Rental name, symbol and location are mendatory");
     });
 
@@ -78,8 +78,8 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
-      await expect(rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address"))
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+      await expect(rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8"))
       .to.be.revertedWith("Rental name already exists");
     });
 
@@ -89,7 +89,7 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       expect(rentalCollectionFactory.address).to.not.equal(ethers.constants.AddressZero);
       const rentalCollections = await rentalCollectionFactory.getRentalCollections(owner.address);
       expect(rentalCollections.includes('0xa16E02E87b7454126E5E10d957A927A7F5B5d2be')).to.true;
@@ -101,7 +101,7 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       const collectionFactoryCount = await rentalCollectionFactory.collectionFactoryNum();
       expect(collectionFactoryCount).to.equal(1);
     });
@@ -112,9 +112,9 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       expect(rentalCollectionFactory.address).to.not.equal(ethers.constants.AddressZero);
-      await rentalCollectionFactory.createRentalCollection("LOCATION_2", "LOC2", "Rental address 2");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_2", "LOC2", "Rental address 2","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       expect(rentalCollectionFactory.address).to.not.equal(ethers.constants.AddressZero);
     });
 
@@ -124,9 +124,9 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       expect(rentalCollectionFactory.address).to.not.equal(ethers.constants.AddressZero);
-      await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_2", "LOC2", "Rental address 2");
+      await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_2", "LOC2", "Rental address 2","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       expect(rentalCollectionFactory.address).to.not.equal(ethers.constants.AddressZero);
       const rentalCollections = await rentalCollectionFactory.getRentalCollections(owner.address);
       expect(rentalCollections.length).to.equal(1);
@@ -141,7 +141,7 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       expect(await rentalCollectionFactory.owner()).to.equal(owner.address);
     });
 
@@ -151,8 +151,8 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
-      await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_2", "LOC2", "Rental address 2");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+      await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_2", "LOC2", "Rental address 2","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       const rentalCollections = await rentalCollectionFactory.getRentalCollections(owner.address);
       const rentalCollections2 = await rentalCollectionFactory.getRentalCollections(owner2.address);
 
@@ -171,10 +171,10 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      await rentalCollectionFactory.createRentalCollection("LOCATION_1_LESSOR_1", "LOC1", "Rental address 1");
-      await rentalCollectionFactory.createRentalCollection("LOCATION_2_LESSOR_1", "LOC2", "Rental address 2");
-      await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_1_LESSOR_2", "LOC1", "Rental address 1");
-      await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_2_LESSOR_2", "LOC2", "Rental address 2");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_1_LESSOR_1", "LOC1", "Rental address 1","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+      await rentalCollectionFactory.createRentalCollection("LOCATION_2_LESSOR_1", "LOC2", "Rental address 2","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+      await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_1_LESSOR_2", "LOC1", "Rental address 1","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+      await rentalCollectionFactory.connect(owner2).createRentalCollection("LOCATION_2_LESSOR_2", "LOC2", "Rental address 2","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
       const rentalCollections = await rentalCollectionFactory.getRentalCollections(owner.address);
       const rentalCollections2 = await rentalCollectionFactory.getRentalCollections(owner2.address);
 
@@ -203,7 +203,7 @@ describe("Rental collection factory", function() {
         deployRentalCollectionFixture
       );
 
-      const rentalCollection = await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address");
+      const rentalCollection = await rentalCollectionFactory.createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
 
       await expect(rentalCollection)
         .to.emit(rentalCollectionFactory, "RentalCollectionCreated")
@@ -263,8 +263,8 @@ describe("Rental collection", function() {
     const RentalCollectionFactory = await ethers.getContractFactory("RentalCollectionFactory");
     const rentalCollectionFactory = await RentalCollectionFactory.deploy();
     await rentalCollectionFactory.deployed();
-    await rentalCollectionFactory.connect(owner).createRentalCollection("LOCATION_1", "LOC1", "Rental address");
-    await rentalCollectionFactory.connect(owner).createRentalCollection("LOCATION_2", "LOC2", "Rental address2");
+    await rentalCollectionFactory.connect(owner).createRentalCollection("LOCATION_1", "LOC1", "Rental address","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+    await rentalCollectionFactory.connect(owner).createRentalCollection("LOCATION_2", "LOC2", "Rental address2","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
 
     const rentalCollections = await rentalCollectionFactory.getRentalCollections(owner.address);
     const rentalCollectionAddress = rentalCollections[0];

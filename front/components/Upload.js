@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Input, Button, useToast } from '@chakra-ui/react';
 
-// Remplacez les valeurs par votre propre clé API et clé secrète.
-const API_KEY = 'YOUR_API_KEY';
-const API_SECRET = 'YOUR_API_SECRET';
+function Upload({setImage }) {
 
-function Upload() {
+  const API_KEY = 'YOUR_API_KEY';
+  const API_SECRET = 'YOUR_API_SECRET';
+  const toast = useToast();
   const [selectedFile, setSelectedFile] = useState(null);
 
   // Gérer le changement de fichier sélectionné par l'utilisateur
@@ -15,6 +16,7 @@ function Upload() {
 
   // Envoyer une requête POST à l'API Pinata pour uploader le fichier
 async function handleFileUpload(e) {
+    if(selectedFile === null) return;
     console.log('starting')
     const formData = new FormData()
     formData.append("file", selectedFile)
@@ -37,14 +39,22 @@ async function handleFileUpload(e) {
     )
 
     console.log(response)
+    setImage(response.data.IpfsHash);
     console.log(response.data.IpfsHash)
     
+    toast({
+      title: 'Congratulations',
+      description: `File has been uploaded`,
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    })
 }
 
   return (
     <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleFileUpload}>Upload to Pinata</button>
+      <input type="file" onChange={handleFileChange}></input>
+      <Button colorScheme='facebook' onClick={handleFileUpload}>Upload to Pinata</Button>
     </div>
   );
 }

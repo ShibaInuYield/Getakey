@@ -1,8 +1,8 @@
-import Rental from '../components/Rental';
+import Rental from '@/components/Rental.js'
 import Head from 'next/head'
 import Layout from '@/components/Layout/Layout'
-import { address, useAccount, useProvider, useContractEvent } from 'wagmi'
-import { Text, useToast, Flex, Button } from '@chakra-ui/react'
+import { useAccount, useProvider } from 'wagmi'
+import { Flex, Grid } from '@chakra-ui/react'
 import {
   Alert,
   AlertIcon
@@ -14,38 +14,52 @@ import { contractAddress, abi } from "../public/constants/contract.js"
 
 export default function rental() {
  
-  const {address, isConnected } = useAccount()
+  const {isConnected } = useAccount()
   const provider = useProvider()
-  const toast = useToast()
 
-  const [number, setNumber] = useState(null);
-  // const [rentals, setRentals] = useState([]);
+  const [rentalCollections, setRentalCollections] = useState([]);
   
   useEffect(() =>{
-    getRental();
+    getRentalCollections();
   },[]);
 
-  const getRental = async() => {
-  
-  try {
+
+  async function fetchRentalCollections() {
     const contractFactory = new ethers.Contract(contractFactoryAddress, abiFactory, provider)
-    const data = await contractFactory.getRentalCollections(address);
-    // setRentals(data);
-    const contract = new ethers.Contract(contractAddress, abi, provider)
-    // const rental = await contract.getOwnerRentals();
-    // alert(rental);
-  }
-  catch(e) {
-    toast({
-        title: 'Error',
-        description: `${String(e)}`,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-    })
-    console.log(e)
+    if (!contractFactory) return;
+
+    try {
+      const rentalCollectionCreatedFilter = contractFactory.filters.RentalCollectionCreated();
+      if (!rentalCollectionCreatedFilter) return;
+
+      const rentalCollectionCreatedEvents = await contractFactory.queryFilter(
+        rentalCollectionCreatedFilter
+      );
+      if (!rentalCollectionCreatedEvents) return;
+        console.log(rentalCollectionCreatedEvents);
+      const fetchedRentalCollections = rentalCollectionCreatedEvents.map(
+        (rentalCollection) => ({
+          name: rentalCollection?.args?._rentalName,
+          symbol: rentalCollection?.args?._rentalSymbol,
+          description: rentalCollection?.args?._description,
+          timestamp: rentalCollection?.args?._timestamp,
+          image: rentalCollection?.args?._image
+        }));
+
+      setRentalCollections(fetchedRentalCollections);
+      console.log(rentalCollections);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
+  const getRentalCollections = async() => {
+  try {
+    fetchRentalCollections();
+  }
+  catch(e) {
+    console.error(error);
+  }
 }
   
   return (
@@ -59,22 +73,19 @@ export default function rental() {
       <Layout>
       {isConnected ? (
       <div>
-        {/* <div style={{ display: 'flex', justifyContent: 'space-between' }}> */}
-        <Flex alignItems="center">
-            <Button colorScheme='blue' onClick={() => getRental()}>Get rentals</Button>
-            {number ? (
-                <Text ml="1rem">{number}</Text> 
-            ) : (
-                <Text ml="1rem">Please, click on this button to get the number.</Text>
-            )}
+        <Flex alignItems="center" wrap="wrap" justify="center" grow="2">
+        <Grid templateColumns='repeat(2, 1fr)' gap={3}>
+           {rentalCollections.map(({ name, symbol, description, image }) => (
+               <Rental key={name}
+               image={image}
+               title={`${name} ${symbol}`}
+               description={description}
+             />
+          )
+        )}  
+        </Grid>
         </Flex>
-        {/* <Rental
-          imageSrc="https://media.istockphoto.com/id/168376723/fr/photo/nouvelle-maison-avec-la-vue-sur-le-jardin-einfamilienhaus-trajet.jpg?s=2048x2048&w=is&k=20&c=T8qgyZXdDv--tidG-ukBfVlvdelWI2ge1C1qR63H2EI="
-          title="Rental 1"
-          description="Une belle maison dans un quartier tranquille"
-        /> */}
         </div>
-      // </div>
         ) : (
           <Alert status='warning' width="50%">
             <AlertIcon />

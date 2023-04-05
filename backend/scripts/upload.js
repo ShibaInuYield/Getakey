@@ -22,18 +22,18 @@ const readableStreamForFile = fs.createReadStream(path.resolve(__dirname,'image.
 
   const deployedFactoryContract = await rentalCollectionFactory.deployed();
   const rentalCollectionFactoryAddress = deployedFactoryContract.address;
-  await rentalCollectionFactory.createRentalCollection("GENESIS","GEN","ADDR");
-  await rentalCollectionFactory.createRentalCollection("LOCATION_1","L1","ADDRESSE1");
+  await rentalCollectionFactory.createRentalCollection("GENESIS","GEN","ADDR","ipfs://QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+  await rentalCollectionFactory.createRentalCollection("LOCATION_1","L1","ADDRESSE1","ipfs://QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
 
   const deployedFactoryContract2 =await rentalCollectionFactory2.deployed();
   const rentalCollectionFactory2Address = deployedFactoryContract2.address;
-  await rentalCollectionFactory2.createRentalCollection("GENESIS","GEN","ADDR");
-  await rentalCollectionFactory2.createRentalCollection("LOCATION_2","L2","ADDRESSE2");
+  await rentalCollectionFactory2.createRentalCollection("GENESIS","GEN","ADDR","ipfs://QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+  await rentalCollectionFactory2.createRentalCollection("LOCATION_2","L2","ADDRESSE2","ipfs://QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
 
   const deployedFactoryContract3 =await rentalCollectionFactory3.deployed();
   const rentalCollectionFactory3Address = deployedFactoryContract3.address;
-  await rentalCollectionFactory3.createRentalCollection("GENESIS","GEN","ADDR");
-  await rentalCollectionFactory3.createRentalCollection("LOCATION_3","L3","ADDRESSE3");
+  await rentalCollectionFactory3.createRentalCollection("GENESIS","GEN","ADDR","ipfs://QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+  await rentalCollectionFactory3.createRentalCollection("LOCATION_3","L3","ADDRESSE3","ipfs://QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
 
   // //get number of created collection
   const collectionFactoryNum = await rentalCollectionFactory.collectionFactoryNum();

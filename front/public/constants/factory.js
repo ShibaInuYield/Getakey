@@ -36,6 +36,12 @@ export const abiFactory = [
       },
       {
         "indexed": false,
+        "internalType": "string",
+        "name": "_description",
+        "type": "string"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "_collectionAddress",
         "type": "address"
@@ -45,6 +51,12 @@ export const abiFactory = [
         "internalType": "uint256",
         "name": "_timestamp",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_image",
+        "type": "string"
       }
     ],
     "name": "RentalCollectionCreated",
@@ -77,7 +89,12 @@ export const abiFactory = [
       },
       {
         "internalType": "string",
-        "name": "_location",
+        "name": "_description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_image",
         "type": "string"
       }
     ],

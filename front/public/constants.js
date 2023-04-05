@@ -77,7 +77,7 @@ export const abi = [
       },
       {
         "internalType": "string",
-        "name": "_location",
+        "name": "_description",
         "type": "string"
       }
     ],

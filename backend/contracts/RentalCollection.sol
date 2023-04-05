@@ -14,6 +14,7 @@ contract RentalCollection is ERC721, Ownable {
         string name;
         string symbol;
         string location;
+        string image;
         uint256 nftId;
     }
 
@@ -45,7 +46,7 @@ contract RentalCollection is ERC721, Ownable {
     event NftTransfered(address to,uint256 nftId,address msgSender);
     event NftControlled(address renter,uint256 nftId, address msgSender); 
 
-    function createRental(string memory name, string memory symbol, string memory _location, address _rentalCollectionAddress, uint _id, address _owner) external onlyOwner {
+    function createRental(string memory name, string memory symbol, string memory _description, address _rentalCollectionAddress, uint _id, string memory _image,  address _owner) external onlyOwner {
         _name= name;
         _symbol= symbol;
         Rental storage newCollection = Rentals[_id];
@@ -53,7 +54,8 @@ contract RentalCollection is ERC721, Ownable {
         newCollection.rentalCollectionAddress = _rentalCollectionAddress;
         newCollection.name = name;
         newCollection.symbol = symbol;
-        newCollection.location = _location;
+        newCollection.location = _description;
+        newCollection.image = _image;
         newCollection.nftId = 1;
         ownerToRentals[_owner].push(_id);
     }

@@ -272,6 +272,11 @@ export const abi = [
         "type": "string"
       },
       {
+        "internalType": "string",
+        "name": "image",
+        "type": "string"
+      },
+      {
         "internalType": "uint256",
         "name": "nftId",
         "type": "uint256"
@@ -401,7 +406,7 @@ export const abi = [
       },
       {
         "internalType": "string",
-        "name": "_location",
+        "name": "_description",
         "type": "string"
       },
       {
@@ -413,6 +418,11 @@ export const abi = [
         "internalType": "uint256",
         "name": "_id",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_image",
+        "type": "string"
       },
       {
         "internalType": "address",
