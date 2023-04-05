@@ -545,6 +545,22 @@ describe("Rental collection", function() {
       expect(nftOfOwner[1]).to.equal(2);
     });
 
+    it.only("Should get all the rental periods from owner", async function() {
+
+      const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp2, RentalPeriod.endTimestamp2, renter1.address, RentalPeriod.isPaid);
+      await rentalCollection.createRentalPeriod(RentalPeriod.rentalId,RentalPeriod.startTimestamp2, RentalPeriod.endTimestamp2, owner.address, RentalPeriod.isPaid);
+      nftOfOwner = await rentalCollection.getAllNftRental(1);
+      console.log(nftOfOwner);
+      // expect(nftOfOwner[0]).to.equal(1);
+      // expect(nftOfOwner[1]).to.equal(2);
+    });
+
     it("Should burn a nft", async function() {
 
       const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(

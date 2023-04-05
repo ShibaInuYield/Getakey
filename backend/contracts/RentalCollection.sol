@@ -31,6 +31,7 @@ contract RentalCollection is ERC721, Ownable {
     mapping(uint256 => Rental) public Rentals;
 
     mapping(uint256 => RentalPeriod[]) public rentalToPeriods;
+    mapping(uint256 => mapping(uint256 => RentalPeriod)) public rentalToPeriodIdToPeriod;
 
     mapping(address => uint256[]) public ownerToRentals;
 
@@ -76,6 +77,7 @@ contract RentalCollection is ERC721, Ownable {
         bool isRented = true;
 
         rentalToPeriods[_rentalID].push(RentalPeriod(_rentalID, nftId, _startTimestamp , _endTimestamp , walletHash, isRented, _isPaid));
+        rentalToPeriodIdToPeriod[_rentalID][nftIds.current()] = RentalPeriod(_rentalID, nftId, _startTimestamp , _endTimestamp , walletHash, isRented, _isPaid);
 
         emit RentalPeriodCreated(_startTimestamp,_endTimestamp, _renter, _isPaid, isRented);
         return nftId;
@@ -134,6 +136,19 @@ contract RentalCollection is ERC721, Ownable {
             }
         }
         return nftIdArray;
+    }
+
+    function getAllNftRental(uint256 rentalId) onlyOwner external view returns (RentalPeriod[] memory) {
+        require(msg.sender != address(0), "Address zero is forbidden");
+
+        RentalPeriod[] memory rentalPerioArray = new RentalPeriod[](nftIds.current());
+
+        uint256 index;
+        for (uint256 i; i < nftIds.current(); i++) {           
+                rentalPerioArray[index] = rentalToPeriodIdToPeriod[rentalId][i];
+                index++;
+            }
+        return rentalPerioArray;
     }
 
     function burn(address _owner, uint256 _rentalId,uint256 _nftId) external onlyOwner {
