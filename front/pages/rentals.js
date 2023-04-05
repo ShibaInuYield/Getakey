@@ -1,7 +1,7 @@
 import Rental from '../components/Rental';
 import Head from 'next/head'
 import Layout from '@/components/Layout/Layout'
-import { address, useAccount, useProvider } from 'wagmi'
+import { address, useAccount, useProvider, useContractEvent } from 'wagmi'
 import { Text, useToast, Flex, Button } from '@chakra-ui/react'
 import {
   Alert,
@@ -9,7 +9,8 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
-import { contractAddress, abi } from "../public/constants/factory.js"
+import { contractFactoryAddress, abiFactory } from "../public/constants/factory.js"
+import { contractAddress, abi } from "../public/constants/contract.js"
 
 export default function rental() {
  
@@ -18,18 +19,21 @@ export default function rental() {
   const toast = useToast()
 
   const [number, setNumber] = useState(null);
-  const [rentals, setRentals] = useState([]);
+  // const [rentals, setRentals] = useState([]);
   
   useEffect(() =>{
-    // getRental();
+    getRental();
   },[]);
 
   const getRental = async() => {
   
   try {
+    const contractFactory = new ethers.Contract(contractFactoryAddress, abiFactory, provider)
+    const data = await contractFactory.getRentalCollections(address);
+    // setRentals(data);
     const contract = new ethers.Contract(contractAddress, abi, provider)
-    const data = await contract.getRentalCollections(address);
-    setRentals(data);
+    // const rental = await contract.getOwnerRentals();
+    // alert(rental);
   }
   catch(e) {
     toast({

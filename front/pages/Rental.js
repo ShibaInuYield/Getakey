@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Maison = (props) => {
+const Rental = (props) => {
   return (
     <div className="rental">
       <img src={props.imageSrc} alt={props.title} className="rentalImg" />
@@ -12,4 +12,4 @@ const Maison = (props) => {
   );
 };
 
-export default Maison;
+export default Rental;

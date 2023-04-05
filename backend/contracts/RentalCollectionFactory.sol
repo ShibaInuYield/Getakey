@@ -35,7 +35,7 @@ contract RentalCollectionFactory is Ownable {
       lessorToContractAddress[msg.sender].push(address(rentalCollection));
       rentalNames[_rentalName] = Rental({ name: _rentalName, symbol: _rentalSymbol, location: _location });
 
-      emit RentalCollectionCreated(_rentalName,_rentalSymbol, collectionAddress, block.timestamp);
+      emit RentalCollectionCreated(_rentalName,_rentalSymbol, address(rentalCollection), block.timestamp);
         return address(rentalCollection);
     }
 

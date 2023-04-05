@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-node_modules
-=======
 backend/scripts/image.png
 node_modules
->>>>>>> unit
+front/.env
+front/components/maison.png
