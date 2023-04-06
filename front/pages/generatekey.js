@@ -100,10 +100,10 @@ useEffect(() => {
           </TableContainer>
           </Flex>
         ) : (
-          <Alert status='warning' width="50%">
-            <AlertIcon />
-            Please, connect your Wallet.
-          </Alert>
+          <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
+          <AlertIcon />
+          Please, connect your Wallet!
+        </Alert>
         )}
       </Layout>
     </>

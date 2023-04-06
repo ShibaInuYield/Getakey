@@ -155,7 +155,7 @@ export default function createRental() {
                     )}
                   </Field>
                   <Center h='100px' color='white'>
-                    <Button mt={4} colorScheme='facebook'
+                    <Button backgroundColor="#001922" mt={4} colorScheme='facebook'
                     onClick={() => createRental()}
                     >
                       Submit
@@ -167,9 +167,9 @@ export default function createRental() {
             </Formik>
           </Flex>
         ) : (
-          <Alert status='warning' width="50%">
-            <AlertIcon />
-            Please, connect your Wallet.
+          <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
+          <AlertIcon />
+          Please, connect your Wallet!
           </Alert>
         )}
       </Layout>

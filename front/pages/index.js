@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Layout from '@/components/Layout/Layout'
 import { useAccount } from 'wagmi'
-import { Text } from '@chakra-ui/react'
+import { AspectRatio  } from '@chakra-ui/react'
 import {
   Alert,
   AlertIcon,
@@ -23,14 +23,15 @@ export default function Home() {
       </Head>
       <Layout>
         {isConnected ? (
-          <Text>Welcome on Cryptokey DApp !</Text>
+            <iframe width="800" height="500"
+            src="https://www.youtube.com/embed/omwPuLRim0U?autoplay=1&mute=1&loop=1&controls=0">
+            </iframe>
         ) : (
-          <Alert status='warning' width="50%">
-            <AlertIcon />
-            Please, connect your Wallet!
+          <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
+          <AlertIcon />
+          Please, connect your Wallet!
           </Alert>
         )}
-       <Mint/>
       </Layout>
     </>
   )

@@ -4,13 +4,13 @@ import Link from 'next/link';
 
 const Header = () => {
     return (
-        <Flex justifyContent="space-between" alignItems="center" height="10vh" width="100%" p="2rem">
-            <Image boxSize='5rem' objectFit='cover' src='https://ipfs.io/ipfs/QmcEvwdEskwVCKHUJs4gxWaihEWyWpAF1nPkFNKMm66Rvs' alt='Logo'/>
-            <Flex width="50%" justifyContent="space-between" alignItems="center">
-                <Text><Link href="/">Home</Link></Text>
-                <Text><Link href="/createRental">Create rental</Link></Text>
-                <Text><Link href="/rentals">See rentals</Link></Text>
-                <Text><Link href="/generatekey">Generate key</Link></Text>
+        <Flex justifyContent="space-between" alignItems="center" height="10vh" color="#FFFFFF" fontFamily="fantasy" backgroundColor="#001922" width="100%" p="2rem">
+            <Image boxSize='5rem' objectFit='cover' src='https://ipfs.io/ipfs/QmTR8CB9RBUmm9F2zM4dab9JUzoeEcVbtxnJ9DAMdzvhex' alt='Logo'/>
+            <Flex width="50%" color="#001922" justifyContent="space-between" alignItems="center">
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/">Home</Link></Text>
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/createRental">Create rental</Link></Text>
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/rentals">See rentals</Link></Text>
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/generatekey">Generate key</Link></Text>
             </Flex>
             <ConnectButton />
         </Flex>

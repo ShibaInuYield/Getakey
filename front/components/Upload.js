@@ -52,7 +52,7 @@ async function handleFileUpload(e) {
   return (
     <div>
       <input type="file" onChange={handleFileChange}></input>
-      <Button colorScheme='facebook' onClick={handleFileUpload}>Upload to Pinata</Button>
+      <Button backgroundColor='#001922' color="#FFFFFF" onClick={handleFileUpload}>Upload to Pinata</Button>
     </div>
   );
 }
