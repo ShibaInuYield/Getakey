@@ -67,12 +67,6 @@ export const abi = [
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "rentalId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
         "name": "nftId",
         "type": "uint256"
       }
@@ -155,25 +149,31 @@ export const abi = [
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "startTimestamp",
+        "name": "nftId",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "endTimestamp",
+        "name": "_startTimestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_endTimestamp",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "address",
-        "name": "renter",
+        "name": "_renter",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "bool",
-        "name": "isPaid",
+        "name": "_isPaid",
         "type": "bool"
       },
       {
@@ -189,12 +189,6 @@ export const abi = [
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "rentalID",
-        "type": "uint256"
-      },
       {
         "indexed": false,
         "internalType": "uint256",
@@ -239,47 +233,32 @@ export const abi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
-    "name": "Rentals",
+    "name": "addressToRental",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
       {
         "internalType": "address",
         "name": "owner",
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "rentalCollectionAddress",
-        "type": "address"
-      },
-      {
         "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "location",
+        "name": "description",
         "type": "string"
       },
       {
         "internalType": "string",
         "name": "image",
         "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "nftId",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -331,11 +310,6 @@ export const abi = [
       },
       {
         "internalType": "uint256",
-        "name": "_rentalId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "_nftId",
         "type": "uint256"
       }
@@ -347,11 +321,6 @@ export const abi = [
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_rentalID",
-        "type": "uint256"
-      },
       {
         "internalType": "uint256",
         "name": "_nftId",
@@ -439,11 +408,6 @@ export const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_rentalID",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "_startTimestamp",
         "type": "uint256"
       },
@@ -475,19 +439,45 @@ export const abi = [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_owner",
-        "type": "address"
-      }
-    ],
-    "name": "getAllNftIds",
+    "inputs": [],
+    "name": "getAllNftRental",
     "outputs": [
       {
-        "internalType": "uint256[]",
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "nftId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "renter",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRented",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isPaid",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct RentalCollection.RentalPeriod[]",
         "name": "",
-        "type": "uint256[]"
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -513,24 +503,11 @@ export const abi = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getOwnerRentals",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_rentalID",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "rentalCollectionAddress",
+        "type": "address"
       }
     ],
     "name": "getRental",
@@ -541,29 +518,9 @@ export const abi = [
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "rentalCollectionAddress",
-        "type": "address"
-      },
-      {
         "internalType": "string",
-        "name": "name",
+        "name": "description",
         "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "location",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "nftId",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -573,22 +530,12 @@ export const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_rentalId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "_nftId",
         "type": "uint256"
       }
     ],
     "name": "getRentalPeriod",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "rentalId",
-        "type": "uint256"
-      },
       {
         "internalType": "uint256",
         "name": "nftId",
@@ -605,9 +552,9 @@ export const abi = [
         "type": "uint256"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "address",
         "name": "renter",
-        "type": "bytes32"
+        "type": "address"
       },
       {
         "internalType": "bool",
@@ -695,54 +642,13 @@ export const abi = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
     ],
-    "name": "ownerToRentals",
+    "name": "periodIdToPeriod",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "rentalToPeriods",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "rentalId",
-        "type": "uint256"
-      },
       {
         "internalType": "uint256",
         "name": "nftId",
@@ -759,9 +665,9 @@ export const abi = [
         "type": "uint256"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "address",
         "name": "renter",
-        "type": "bytes32"
+        "type": "address"
       },
       {
         "internalType": "bool",
@@ -775,6 +681,13 @@ export const abi = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -955,4 +868,4 @@ export const abi = [
     "stateMutability": "payable",
     "type": "receive"
   }
-];
+]

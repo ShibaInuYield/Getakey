@@ -10,7 +10,6 @@ import {
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { contractFactoryAddress, abiFactory } from "../public/constants/factory.js"
-import { contractAddress, abi } from "../public/constants/contract.js"
 
 export default function rental() {
  
@@ -22,7 +21,6 @@ export default function rental() {
   useEffect(() =>{
     getRentalCollections();
   },[]);
-
 
   async function fetchRentalCollections() {
     const contractFactory = new ethers.Contract(contractFactoryAddress, abiFactory, provider)
@@ -36,7 +34,6 @@ export default function rental() {
         rentalCollectionCreatedFilter
       );
       if (!rentalCollectionCreatedEvents) return;
-        console.log(rentalCollectionCreatedEvents);
       const fetchedRentalCollections = rentalCollectionCreatedEvents.map(
         (rentalCollection) => ({
           name: rentalCollection?.args?._rentalName,

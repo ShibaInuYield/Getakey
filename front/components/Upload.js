@@ -9,12 +9,10 @@ function Upload({setImage }) {
   const toast = useToast();
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Gérer le changement de fichier sélectionné par l'utilisateur
   function handleFileChange(event) {
     setSelectedFile(event.target.files[0]);
   }
 
-  // Envoyer une requête POST à l'API Pinata pour uploader le fichier
 async function handleFileUpload(e) {
     if(selectedFile === null) return;
     console.log('starting')

@@ -30,7 +30,7 @@ contract RentalCollectionFactory is Ownable {
       
       RentalCollection rentalCollection = new RentalCollection();
       collectionFactoryNum++;
-      rentalCollection.createRental(_rentalName, _rentalSymbol, _description, collectionAddress, collectionFactoryNum, _image, msg.sender);
+      rentalCollection.createRental(_rentalName, _rentalSymbol, _description, address(rentalCollection), collectionFactoryNum, _image, msg.sender);
       rentalCollection.transferOwnership(msg.sender);
       lessorToContractAddress[msg.sender].push(address(rentalCollection));
       rentalNames[_rentalName] = Rental({ name: _rentalName, symbol: _rentalSymbol, location: _description });

@@ -1,113 +1,59 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout/Layout'
-import { useAccount, useSigner,useContractEvent } from 'wagmi'
-import { Flex, TableContainer, Table, TableCaption, Thead, Tbody, Tr, Td, Th, Tfoot, useToast} from '@chakra-ui/react'
+import { useAccount, useSigner,useProvider } from 'wagmi'
+import { Text, Flex, TableContainer, Table, TableCaption, Thead, Tbody, Tr, Td, Th, Tfoot, useToast, Button} from '@chakra-ui/react'
 import {
   Alert,
   AlertIcon
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
-import { contractFactoryAddress, abiFactory } from "../public/constants/factory"
-import Upload from '../components/Upload'
+import { contractAddress, abi } from "../public/constants/contract"
+import Mint from '@/components/Mint'
 
 export default function createRental() {
-  const { isConnected } = useAccount()
-  const { data: signer } = useSigner()
-  const toast = useToast()
-  const router = useRouter()
+  const { isConnected } = useAccount();
 
-  const [name, setName] = useState("");
-  const [symbol, setSymbol] = useState("");
-  const [description, setDescription] = useState("");
-  const [rental, setRental] = useState("");
-  const[image,setImage] = useState("");
+  const [allRentals, setAllRentals] = useState([]);
 
-  useContractEvent({
-    address: contractFactoryAddress,
-    abi: abiFactory,
-    eventName: 'RentalCollectionCreated',
-    listener(_rentalName, _rentalSymbol, _collectionAddress,_timestamp) {
-      if(rental !== "")
-      {
-        toast({
-          title: 'Congratulations',
-          description: `The rental ${_rentalName} with ${_rentalSymbol} \n at the address ${_collectionAddress} has been created!`,
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
-      }
-    },
-  },[rental]);
+useEffect(() => {
+  fetchReservations();
+  console.log(allRentals);
+}, []);
 
-  function handleRentalNameChange(event) {
-    setName(event.target.value);
-  }
+  const provider = useProvider()
 
-  function handleRentalSymnbolChange(event) {
-    setSymbol(event.target.value);
-  }
-
-  function handleRentalDescriptionChange(event) {
-    setDescription(event.target.value);
-  }
-
-  const createRental = async() => {
+  async function fetchReservations() {
+    const contract = new ethers.Contract(contractAddress, abi, provider)
+    if (!contract) return;
 
     try {
-        const contract = new ethers.Contract(contractFactoryAddress, abiFactory, signer);
-        if(image === "")
-        {
-          toast({
-            title: 'Error',
-            description: 'You must upload an image before validating',
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          })
-          return;
-        }
+      const rentalPeriodCreatedFilter = contract.filters.RentalPeriodCreated();
+      if (!rentalPeriodCreatedFilter) return;
 
-        if(name === "" || symbol === "" || description === ""){
-          toast({
-            title: 'Error',
-            description: 'All fields are mandatory',
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          })
-          return;
-        }
-        let transaction = await contract.createRentalCollection(name, symbol, description,`https://ipfs.io/ipfs/${image}`);
-        await transaction.wait()
-        setRental(transaction);
-        setName("");
-        setSymbol("");
-        setDescription("");
-        setImage("");
-        
+      const rentalPeriodCreatedEvents = await contract.queryFilter(
+        rentalPeriodCreatedFilter
+      );
+      if (!rentalPeriodCreatedEvents) return;
+      const fetchedRentals = rentalPeriodCreatedEvents.map(
+        (rental) => ({
+          id: rental?.args?.nftId.toNumber(),
+          startTimestamp: rental?.args?._startTimestamp.toNumber(),
+          endTimestamp: rental?.args?._endTimestamp.toNumber(),
+          renter: rental?.args?._renter,
+          isPaid: rental?.args?._isPaid ? "Yes" : "No",
+          isRented: rental?.args?.isRented ? "Yes" : "No"
+        }));
+
+      console.log("fetchedRentals",fetchedRentals);
+      setAllRentals(fetchedRentals);
+      setTimeout(() => {
+        console.log("allRentals", allRentals);
+      }, "3000");
+    } catch (error) {
+      console.error(error);
     }
-    catch(e) {
-        toast({
-            title: 'Error',
-            description: `${String(e).includes("Rental name already exists") ? "Rental name already exists" : e}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-        })
-        console.log(e)
-    }
-    
-  }
-  
-  function validateName(value) {
-    let error
-    if (!value) {
-      error = 'Name is required'
-    }
-    return error
   }
 
   return (
@@ -119,10 +65,12 @@ export default function createRental() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
+
+     
         {isConnected ? (
-          <Flex alignItems="center">
-            <TableContainer>
-            <Table size="lg" variant='striped' color="#000000" backgroundColor='#73a7eb'>
+          <Flex alignItems="center">        
+            <TableContainer borderWidth="3px" borderRadius="10px">           
+            <Table size="sm" variant='striped' color="#000000" backgroundColor='#73a7eb'>
               <TableCaption>List of all rentals</TableCaption>
               <Thead>
                 <Tr>
@@ -132,33 +80,21 @@ export default function createRental() {
                   <Th>renter</Th>
                   <Th>Is rented</Th>
                   <Th>Paid</Th>
+                  <Th></Th>
                 </Tr>
               </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>inches</Td>
-                  <Td>millimetres (mm)</Td>
-                  <Td isNumeric>25.4</Td>
-                  <Td>inches</Td>
-                  <Td>millimetres (mm)</Td>
-                  <Td isNumeric>25.4</Td>
-                </Tr>
-                <Tr>
-                  <Td>feet</Td>
-                  <Td>centimetres (cm)</Td>
-                  <Td isNumeric>30.48</Td>
-                  <Td>feet</Td>
-                  <Td>centimetres (cm)</Td>
-                  <Td isNumeric>30.48</Td>
-                </Tr>
-                <Tr>
-                  <Td>yards</Td>
-                  <Td>metres (m)</Td>
-                  <Td isNumeric>0.91444</Td>
-                  <Td>yards</Td>
-                  <Td>metres (m)</Td>
-                  <Td isNumeric>0.91444</Td>
-                </Tr>
+              <Tbody>                             
+              {allRentals.map(({id, startTimestamp, endTimestamp, renter, isPaid, isRented }) => (
+              <Tr>
+                <Td>{id}</Td>
+                <Td>{startTimestamp}</Td>
+                <Td>{endTimestamp}</Td>
+                <Td>{renter}</Td>
+                <Td textAlign="center">{isPaid}</Td>
+                <Td textAlign="center">{isRented }</Td>
+                <Td><Mint nftId={id} renter={renter}/></Td>
+              </Tr>
+              ))}  
               </Tbody>
             </Table>
           </TableContainer>
