@@ -9,10 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { contractAddress, abi } from "../public/constants/contract"
-<<<<<<< HEAD
-=======
 import axios from 'axios';
->>>>>>> design
 
 export default function createRental() {
   const provider = useProvider();
