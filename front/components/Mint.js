@@ -4,8 +4,6 @@ import { useAccount, useSigner,useProvider } from 'wagmi'
 import { contractAddress, abi } from "../public/constants/contract"
 import { ethers } from 'ethers'
 
-
-
 export default function Mint(props) {
 
   const provider = useProvider();
@@ -16,6 +14,63 @@ export default function Mint(props) {
   const contract = new ethers.Contract(contractAddress, abi, provider);
   if (!contract) return;
   const handleClick = async () => {
+
+  const key = `ba7982d3d1680b7fff21`;
+  const secret = `15bcc356dfa03f63dcbf6e59b7dbd88c1dbb703583733e15cafa7d107fbea86c`;
+  const pinataSDK = require('@pinata/sdk');
+  const pinata = new pinataSDK(key, secret);
+
+    var data = JSON.stringify({
+        
+        "pinataOptions": {
+            "cidVersion": `${props.nftId}`
+          },
+          "pinataMetadata": {
+            "name": `Cryptokey #${props.nftId}`
+          },
+        "pinataContent": {
+            "name": `Cryptokey #${props.nftId}`,
+            "description": "Your web3 key",
+            "image": "https://ipfs.io/ipfs/QmTR8CB9RBUmm9F2zM4dab9JUzoeEcVbtxnJ9DAMdzvhex",
+            "attributes": [
+            {
+                "trait_type": "nftId",
+                "value": `${props.nftId}`
+            },
+            {
+                "trait_type": "Renter",
+                "value": `${props.renter}`
+            },
+            {
+                "trait_type": "Rental start time",
+                "value": `${props.startTimestamp}`
+            },
+            {
+                "trait_type": "Rental end time",
+                "value": `${props.endTimestamp}`
+            },
+            ]
+        }
+    });
+
+    const API_KEY = process.env.NEXT_PUBLIC_API_KEY
+    const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET
+
+    var config = {
+    method: 'post',
+    url: 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+    headers: {
+        "Content-Type": `application/json`,
+        'pinata_api_key': API_KEY,
+        'pinata_secret_api_key': API_SECRET
+    },
+    
+    data : data
+    };
+
+    const res = await axios(config);
+
+    console.log(res.data);
 
     try {
       const contract = new ethers.Contract(contractAddress, abi, signer);
@@ -39,32 +94,6 @@ export default function Mint(props) {
       })
       console.log(e)
   }
-  //   const response = await fetch('maison.png');
-  //   const fileBuffer = await response.arrayBuffer();
-  //   const file = new Blob([fileBuffer], { type: 'image/png' });
-
-  //   // Create a new FormData object and append the file and any other form data
-  //   const formData = new FormData();
-  //   formData.append('file', file);
-  //   formData.append('name', 'File name');
-  //   formData.append('cidVersion', 0);
-
-  //   const API_KEY = `ba7982d3d1680b7fff21`
-  //   const API_SECRET = `15bcc356dfa03f63dcbf6e59b7dbd88c1dbb703583733e15cafa7d107fbea86c`
-
-  //   try {
-  //     // Send a POST request to upload the file
-  //     const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //         'pinata_api_key': API_KEY,
-  //         'pinata_secret_api_key': API_SECRET
-  //       },
-  //     });
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
   };
 
   return (

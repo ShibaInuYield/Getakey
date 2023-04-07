@@ -112,4 +112,6 @@ a {
 .rentalImg{
   border-radius: 30px;
   width:400px;
+  height: 250px;
+  object-fit: cover;
 }

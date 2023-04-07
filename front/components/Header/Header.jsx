@@ -11,6 +11,7 @@ const Header = () => {
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/createRental">Create rental</Link></Text>
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/rentals">See rentals</Link></Text>
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/generatekey">Generate key</Link></Text>
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/control">Control access</Link></Text>
             </Flex>
             <ConnectButton />
         </Flex>

@@ -16,7 +16,8 @@
     "@nomiclabs/hardhat-ethers": "^2.2.2",
     "@openzeppelin/contracts": "^4.8.2",
     "@openzeppelin/test-helpers": "^0.5.16",
-    "framer-motion": "^10.8.5"
+    "framer-motion": "^10.8.5",
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",

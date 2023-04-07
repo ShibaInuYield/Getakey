@@ -39,8 +39,8 @@ useEffect(() => {
       const fetchedRentals = rentalPeriodCreatedEvents.map(
         (rental) => ({
           id: rental?.args?.nftId.toNumber(),
-          startTimestamp: rental?.args?._startTimestamp.toNumber(),
-          endTimestamp: rental?.args?._endTimestamp.toNumber(),
+          startTimestamp: new Date(rental?.args?._startTimestamp * 1000).toLocaleDateString(),
+          endTimestamp: new Date(rental?.args?._endTimestamp * 1000).toLocaleDateString(),
           renter: rental?.args?._renter,
           isPaid: rental?.args?._isPaid ? "Yes" : "No",
           isRented: rental?.args?.isRented ? "Yes" : "No"
@@ -70,7 +70,7 @@ useEffect(() => {
         {isConnected ? (
           <Flex alignItems="center">        
             <TableContainer borderWidth="3px" borderRadius="10px">           
-            <Table size="sm" variant='striped' color="#000000" backgroundColor='#73a7eb'>
+            <Table size="sm" variant='striped' color="#000000" backgroundColor='#446a9d'>
               <TableCaption>List of all rentals</TableCaption>
               <Thead>
                 <Tr>
@@ -92,7 +92,7 @@ useEffect(() => {
                 <Td>{renter}</Td>
                 <Td textAlign="center">{isPaid}</Td>
                 <Td textAlign="center">{isRented }</Td>
-                <Td><Mint nftId={id} renter={renter}/></Td>
+                <Td><Mint nftId={id} renter={renter} startTimestamp={startTimestamp} endTimestamp={endTimestamp} isPaid={isPaid} isRented={isRented}/></Td>
               </Tr>
               ))}  
               </Tbody>
