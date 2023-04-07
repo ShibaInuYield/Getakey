@@ -60,12 +60,15 @@ contract RentalCollection is ERC721, Ownable {
         require(_renter != address(0), "Zero address not allowed");
 
         // bytes32 walletHash = keccak256(abi.encodePacked(_renter));
-
+        
         nftIds.increment();
         uint nftId = nftIds.current();
         
-        _safeMint(_msgSender(), nftId);
+        _safeMint(msg.sender, nftId);
+
         bool isRented = true;
+
+         _setTokenURI(tokenId, tokenURI);
 
         periodIdToPeriod[nftIds.current()] = RentalPeriod(nftId, _startTimestamp , _endTimestamp , _renter, isRented, _isPaid);
 
