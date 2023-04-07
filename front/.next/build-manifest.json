@@ -25,6 +25,16 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/control": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/control.js"
+    ],
+    "/createRental": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/createRental.js"
+    ],
     "/generatekey": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
