@@ -68,8 +68,6 @@ contract RentalCollection is ERC721, Ownable {
 
         bool isRented = true;
 
-         _setTokenURI(tokenId, tokenURI);
-
         periodIdToPeriod[nftIds.current()] = RentalPeriod(nftId, _startTimestamp , _endTimestamp , _renter, isRented, _isPaid);
 
         emit RentalPeriodCreated(nftId, _startTimestamp,_endTimestamp, _renter, _isPaid, isRented);

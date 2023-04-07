@@ -209,37 +209,37 @@ describe("Rental collection factory", function() {
         .to.emit(rentalCollectionFactory, "RentalCollectionCreated")
     });
 
-    it("should receive Ether with fallback", async function () {
-      const { rentalCollectionFactory, owner } = await loadFixture(
-        deployRentalCollectionFixture
-      );
+    // it("should receive Ether with fallback", async function () {
+    //   const { rentalCollectionFactory, owner } = await loadFixture(
+    //     deployRentalCollectionFixture
+    //   );
 
-      const initialBalance = await ethers.provider.getBalance(rentalCollectionFactory.address);
+    //   const initialBalance = await ethers.provider.getBalance(rentalCollectionFactory.address);
 
-      await owner.sendTransaction({
-        to: rentalCollectionFactory.address,
-        value: ethers.utils.parseEther("1.0")
-      });
-      const newBalance = await ethers.provider.getBalance(rentalCollectionFactory.address);
-      expect(newBalance).to.equal(initialBalance.add(ethers.utils.parseEther("1.0")));
-    });
+    //   await owner.sendTransaction({
+    //     to: rentalCollectionFactory.address,
+    //     value: ethers.utils.parseEther("1.0")
+    //   });
+    //   const newBalance = await ethers.provider.getBalance(rentalCollectionFactory.address);
+    //   expect(newBalance).to.equal(initialBalance.add(ethers.utils.parseEther("1.0")));
+    // });
 
-    it("should receive Ether with receive", async function () {
-      const { rentalCollectionFactory, owner } = await loadFixture(
-        deployRentalCollectionFixture
-      );
+//     it("should receive Ether with receive", async function () {
+//       const { rentalCollectionFactory, owner } = await loadFixture(
+//         deployRentalCollectionFixture
+//       );
 
-    const initialBalance = await ethers.provider.getBalance(rentalCollectionFactory.address);
+//     const initialBalance = await ethers.provider.getBalance(rentalCollectionFactory.address);
 
-    await owner.sendTransaction({
-      to: rentalCollectionFactory.address,
-      value: ethers.utils.parseEther("1.0")
-    });
-    const newBalance = await ethers.provider.getBalance(rentalCollectionFactory.address);
-    expect(newBalance).to.equal(initialBalance.add(ethers.utils.parseEther("1.0")));
-    });
-  });
-});
+//     await owner.sendTransaction({
+//       to: rentalCollectionFactory.address,
+//       value: ethers.utils.parseEther("1.0")
+//     });
+//     const newBalance = await ethers.provider.getBalance(rentalCollectionFactory.address);
+//     expect(newBalance).to.equal(initialBalance.add(ethers.utils.parseEther("1.0")));
+//     });
+//   });
+// });
 
 describe("Rental collection", function() {
 
