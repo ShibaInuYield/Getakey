@@ -10,6 +10,7 @@ import {
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
 import { hardhat, polygon, goerli } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
+import ClientOnly from '@/components/clientonly';
 
 const { chains, provider } = configureChains(
   [hardhat, polygon, goerli],
@@ -32,6 +33,7 @@ const wagmiClient = createClient({
 export default function App({ Component, pageProps }) {
     
   return (
+    <ClientOnly>
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
         <ChakraProvider>
@@ -39,5 +41,6 @@ export default function App({ Component, pageProps }) {
         </ChakraProvider>
       </RainbowKitProvider>
     </WagmiConfig>
+    </ClientOnly>
   )
 }
