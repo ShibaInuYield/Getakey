@@ -15,8 +15,8 @@ async function main() {
 
   const deployedFactoryContract = await rentalCollectionFactory.deployed();
   const rentalCollectionFactoryAddress = deployedFactoryContract.address;
-  await rentalCollectionFactory.createRentalCollection("GENESIS","GEN","ADDR","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
-  await rentalCollectionFactory.createRentalCollection("LOCATION_1","L1","ADDRESSE1","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+  await rentalCollectionFactory.createRentalCollection("LOCATION 1","LOA","Une maison d'exception","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+  await rentalCollectionFactory.createRentalCollection("LOCATION_2","LOB","Une splendide maison en Corse","https://ipfs.io/ipfs/QmXR2MkVsy46kVaHYrHDWtQUypTTwLB7YDqL35dVR3NMvm");
 
   const deployedFactoryContract2 =await rentalCollectionFactory2.deployed();
   const rentalCollectionFactory2Address = deployedFactoryContract2.address;
@@ -60,11 +60,11 @@ async function main() {
 
   //set info of rental period
 
-  await rentalCollection.createRentalPeriod(1679823928,1679824001,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false);
-  await rentalCollection.createRentalPeriod(1679823928,1679824002,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false);
-  await rentalCollection.createRentalPeriod(1679823928,1679824003,"0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",false);
-  await rentalCollection.createRentalPeriod(1679823928,1679824004,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true);
-  await rentalCollection.createRentalPeriod(1679823928,1679824005,"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",true);
+  await rentalCollection.createRentalPeriod(1679823928,1679824001,"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",false);
+  await rentalCollection.createRentalPeriod(1679823928,1679824002,"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",false);
+  await rentalCollection.createRentalPeriod(1679823928,1679824003,"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",false);
+  await rentalCollection.createRentalPeriod(1679823928,1679824004,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",true);
+  await rentalCollection.createRentalPeriod(1679823928,1679824005,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",true);
 
   //get rentals by address
   const rentals = await rentalCollection.getRentalPeriod(1);

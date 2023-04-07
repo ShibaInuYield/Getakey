@@ -4,8 +4,6 @@ import { Input, Button, useToast } from '@chakra-ui/react';
 
 function Upload({setImage }) {
 
-  const API_KEY = 'YOUR_API_KEY';
-  const API_SECRET = 'YOUR_API_SECRET';
   const toast = useToast();
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -19,8 +17,8 @@ async function handleFileUpload(e) {
     const formData = new FormData()
     formData.append("file", selectedFile)
 
-    const API_KEY = `ba7982d3d1680b7fff21`
-    const API_SECRET = `15bcc356dfa03f63dcbf6e59b7dbd88c1dbb703583733e15cafa7d107fbea86c`
+    const API_KEY = process.env.NEXT_PUBLIC_API_KEY
+    const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET
     const url =  `https://api.pinata.cloud/pinning/pinFileToIPFS`
 
     const response = await axios.post(
