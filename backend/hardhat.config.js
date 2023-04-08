@@ -31,7 +31,7 @@ module.exports = {
     //   accounts: [`${PRIVATE_KEY}`]
     // },
     sepolia: {
-      url: `https://sepolia.infura.io/v3/${process.env.SEPOLIA_API_KEY}`,
+      url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_ID}`,
       accounts: [process.env.PRIVATE_KEY || ""],
     }
   },
