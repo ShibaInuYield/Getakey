@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { contractFactoryAddress, abiFactory } from "../public/constants/factory.js"
 
-export default function rental() {
+export default function Rentals() {
  
   const {isConnected } = useAccount()
   const provider = useProvider()

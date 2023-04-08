@@ -20,6 +20,16 @@
       "static/chunks/main.js",
       "static/chunks/pages/index.js"
     ],
+    "/CreateRental": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/CreateRental.js"
+    ],
+    "/Rentals": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Rentals.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -35,20 +45,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/control.js"
     ],
-    "/createRental": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/createRental.js"
-    ],
     "/generatekey": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/generatekey.js"
-    ],
-    "/rentals": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/rentals.js"
     ]
   },
   "ampFirstPages": []
