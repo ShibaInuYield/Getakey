@@ -12,14 +12,13 @@ import { ethers } from 'ethers'
 import { contractAddress, abi } from "../public/constants/contract"
 import Mint from '@/components/Mint'
 
-export default function createRental() {
+export default function GenerateKey() {
   const { isConnected } = useAccount();
 
   const [allRentals, setAllRentals] = useState([]);
 
 useEffect(() => {
   fetchReservations();
-  console.log(allRentals);
 }, []);
 
   const provider = useProvider()
@@ -46,10 +45,8 @@ useEffect(() => {
           isRented: rental?.args?.isRented ? "Yes" : "No"
         }));
 
-      console.log("fetchedRentals",fetchedRentals);
       setAllRentals(fetchedRentals);
       setTimeout(() => {
-        console.log("allRentals", allRentals);
       }, "3000");
     } catch (error) {
       console.error(error);
