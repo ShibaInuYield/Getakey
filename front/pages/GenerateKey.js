@@ -82,7 +82,7 @@ useEffect(() => {
               </Thead>
               <Tbody>                             
               {allRentals.map(({id, startTimestamp, endTimestamp, renter, isPaid, isRented }) => (
-              <Tr>
+              <Tr key={id}>
                 <Td>{id}</Td>
                 <Td>{startTimestamp}</Td>
                 <Td>{endTimestamp}</Td>
