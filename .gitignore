@@ -1,3 +1,4 @@
 backend/scripts/image.png
 node_modules
 front/.env
+package-lock.json
