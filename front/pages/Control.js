@@ -11,7 +11,7 @@ import { ethers } from 'ethers'
 import { contractAddress, abi } from "../public/constants/contract"
 import axios from 'axios';
 
-export default function createRental() {
+export default function Control() {
   const provider = useProvider();
   const { isConnected } = useAccount()
   const { data: signer } = useSigner()

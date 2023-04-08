@@ -10,8 +10,8 @@ const Header = () => {
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/">Home</Link></Text>
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/CreateRental">Create rental</Link></Text>
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/Rentals">See rentals</Link></Text>
-                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/generatekey">Generate key</Link></Text>
-                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/control">Control access</Link></Text>
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/GenerateKey">Generate key</Link></Text>
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/Control">Control access</Link></Text>
             </Flex>
             <ConnectButton />
         </Flex>
