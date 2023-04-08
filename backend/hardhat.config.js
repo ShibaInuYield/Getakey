@@ -1,13 +1,9 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 require("@nomiclabs/hardhat-etherscan");
-
-// const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL || "";
-// const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL || "";
-// const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "";
-// const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
-// const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
-
+// console.log(process.env.PRIVATE_KEY);
+// console.log(process.env.ALCHEMY_API_KEY);
+require("@nomiclabs/hardhat-ethers");
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   defaultNetwork: "hardhat",
@@ -26,12 +22,16 @@ module.exports = {
     //   accounts: [`0x${PRIVATE_KEY}`],
     //   chainId: 80001
     // },
+    mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+      accounts: [process.env.PRIVATE_KEY],
+    },
     // sepolia: {
     //   url: SEPOLIA_RPC_URL,
     //   accounts: [`${PRIVATE_KEY}`]
     // },
     sepolia: {
-      url: `https://sepolia.infura.io/v3/${process.env.INFURA_ID}`,
+      url: `https://sepolia.infura.io/v3/${process.env.SEPOLIA_API_KEY}`,
       accounts: [process.env.PRIVATE_KEY || ""],
     }
   },
