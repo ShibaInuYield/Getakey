@@ -8,8 +8,8 @@ const Header = () => {
             <Image boxSize='5rem' objectFit='cover' src='https://ipfs.io/ipfs/QmTR8CB9RBUmm9F2zM4dab9JUzoeEcVbtxnJ9DAMdzvhex' alt='Logo'/>
             <Flex width="50%" color="#001922" justifyContent="space-between" alignItems="center">
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/">Home</Link></Text>
-                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/createRental">Create rental</Link></Text>
-                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/rentals">See rentals</Link></Text>
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/CreateRental">Create rental</Link></Text>
+                <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/Rentals">See rentals</Link></Text>
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/generatekey">Generate key</Link></Text>
                 <Text backgroundColor="#FFFFFF" padding="2" borderRadius="10"><Link href="/control">Control access</Link></Text>
             </Flex>

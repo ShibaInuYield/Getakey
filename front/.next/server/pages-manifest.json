@@ -2,8 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/generatekey": "pages/generatekey.js",
+  "/CreateRental": "pages/CreateRental.js",
+  "/Rentals": "pages/Rentals.js",
   "/control": "pages/control.js",
-  "/createRental": "pages/createRental.js",
-  "/rentals": "pages/rentals.js",
-  "/generatekey": "pages/generatekey.js"
+  "/": "pages/index.js"
 }

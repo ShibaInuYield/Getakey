@@ -13,7 +13,7 @@ import { ethers } from 'ethers'
 import { contractFactoryAddress, abiFactory } from "../public/constants/factory"
 import Upload from '../components/Upload'
 
-export default function createRental() {
+export default function CreateRental() {
 
   const { isConnected } = useAccount()
   const { data: signer } = useSigner()
