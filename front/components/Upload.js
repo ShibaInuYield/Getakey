@@ -17,8 +17,8 @@ async function handleFileUpload(e) {
     const formData = new FormData()
     formData.append("file", selectedFile)
 
-    const API_KEY = process.env.NEXT_PUBLIC_API_KEY
-    const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET
+    const API_KEY = '5d8b5814d1adb8041bc4'
+    const API_SECRET = '11cb4372d366fb2e3661b33271f84d2d9f106dbd9e9f199eb39b1a91282c216c'
     const url =  `https://api.pinata.cloud/pinning/pinFileToIPFS`
 
     const response = await axios.post(
