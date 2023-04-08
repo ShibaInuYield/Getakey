@@ -150,7 +150,7 @@ export default function CreateRental() {
                             <Input borderColor='#A0AEC0' onChange={handleRentalSymnbolChange}/>
                           </InputGroup>
                           <InputGroup>
-                            <InputLeftAddon width="120px" bg='#718096' color='white' children='Description'>
+                            <InputLeftAddon width="120px" bg='#718096' color='white'>
                               <Text>Description</Text>
                             </InputLeftAddon>
                             <Input borderColor='#A0AEC0' onChange={handleRentalDescriptionChange}/>
