@@ -1,5 +1,4 @@
 {
-  "/_error": "pages/_error.js",
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/Control": "pages/Control.html",
@@ -8,5 +7,6 @@
   "/Rentals": "pages/Rentals.html",
   "/api/hello": "pages/api/hello.js",
   "/": "pages/index.html",
+  "/_error": "pages/_error.js",
   "/404": "pages/404.html"
 }
