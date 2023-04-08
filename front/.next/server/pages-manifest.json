@@ -2,7 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/control": "pages/control.js",
+  "/createRental": "pages/createRental.js",
   "/rentals": "pages/rentals.js",
-  "/generatekey": "pages/generatekey.js",
-  "/control": "pages/control.js"
+  "/generatekey": "pages/generatekey.js"
 }
