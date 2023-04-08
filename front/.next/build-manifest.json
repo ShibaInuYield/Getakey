@@ -15,10 +15,10 @@
   ],
   "rootMainFiles": [],
   "pages": {
-    "/GenerateKey": [
+    "/CreateRental": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/GenerateKey.js"
+      "static/chunks/pages/CreateRental.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
