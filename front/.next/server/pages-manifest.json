@@ -1,6 +1,12 @@
 {
-  "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
+  "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
-  "/Rentals": "pages/Rentals.js"
+  "/Control": "pages/Control.html",
+  "/CreateRental": "pages/CreateRental.html",
+  "/GenerateKey": "pages/GenerateKey.html",
+  "/Rentals": "pages/Rentals.html",
+  "/api/hello": "pages/api/hello.js",
+  "/": "pages/index.html",
+  "/404": "pages/404.html"
 }
