@@ -70,8 +70,8 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_cha
 
 const { chains , provider  } = (0,wagmi__WEBPACK_IMPORTED_MODULE_5__.configureChains)([
     wagmi_chains__WEBPACK_IMPORTED_MODULE_6__.hardhat,
-    wagmi_chains__WEBPACK_IMPORTED_MODULE_6__.polygon,
-    wagmi_chains__WEBPACK_IMPORTED_MODULE_6__.goerli
+    wagmi_chains__WEBPACK_IMPORTED_MODULE_6__.goerli,
+    wagmi_chains__WEBPACK_IMPORTED_MODULE_6__.polygonMumbai
 ], [
     (0,wagmi_providers_public__WEBPACK_IMPORTED_MODULE_7__.publicProvider)()
 ]);
