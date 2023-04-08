@@ -8,12 +8,12 @@ import {
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { hardhat, polygonMumbai, goerli } from 'wagmi/chains';
+import { hardhat, polygonMumbai, goerli,sepolia } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import ClientOnly from '@/components/clientonly';
 
 const { chains, provider } = configureChains(
-  [hardhat, goerli, polygonMumbai],
+  [hardhat, goerli, polygonMumbai,sepolia],
   [
     publicProvider()
   ]
