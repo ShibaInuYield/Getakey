@@ -2,13 +2,13 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout/Layout'
 import { useAccount, useSigner,useContractEvent } from 'wagmi'
-import { Flex, Button, Input, useToast, FormControl,FormErrorMessage, Stack, InputGroup, InputLeftAddon, Center} from '@chakra-ui/react'
+import { Text, Flex, Button, Input, useToast, FormControl,FormErrorMessage, Stack, InputGroup, InputLeftAddon, Center} from '@chakra-ui/react'
 import { Formik, Field, Form } from "formik";
 import {
   Alert,
   AlertIcon
 } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Children } from 'react'
 import { ethers } from 'ethers'
 import { contractFactoryAddress, abiFactory } from "../public/constants/factory"
 import Upload from '../components/Upload'
@@ -56,7 +56,7 @@ export default function CreateRental() {
     setDescription(event.target.value);
   }
 
-  const createRental = async() => {
+  const CreateRental = async() => {
 
     try {
         const contract = new ethers.Contract(contractFactoryAddress, abiFactory, signer);
@@ -130,7 +130,7 @@ export default function CreateRental() {
             >
               {(props) => (
                 <Form>
-                  <Field name='name' validate={validateName}>
+                  <Field name='name'>
                     {({ form }) => (
                       <FormControl isInvalid={form.errors.name && form.touched.name}>
                         <Stack spacing={4}>
@@ -138,15 +138,21 @@ export default function CreateRental() {
                             <Upload setImage={setImage}/>
                           </InputGroup>
                           <InputGroup>
-                            <InputLeftAddon text-a width="120px" bg='#718096' color='white' children='Rental name' />
+                            <InputLeftAddon text-a width="120px" bg='#718096' color='white'>
+                            <Text>Rental name</Text>
+                            </InputLeftAddon>
                             <Input borderColor='#A0AEC0' onChange={handleRentalNameChange} />
                           </InputGroup>
                           <InputGroup>
-                            <InputLeftAddon width="120px" bg='#718096' color='white' children='Symbol' />
+                            <InputLeftAddon width="120px" bg='#718096' color='white'>
+                              <Text>Symbol</Text>
+                            </InputLeftAddon>
                             <Input borderColor='#A0AEC0' onChange={handleRentalSymnbolChange}/>
                           </InputGroup>
                           <InputGroup>
-                            <InputLeftAddon width="120px" bg='#718096' color='white' children='Description' />
+                            <InputLeftAddon width="120px" bg='#718096' color='white' children='Description'>
+                              <Text>Description</Text>
+                            </InputLeftAddon>
                             <Input borderColor='#A0AEC0' onChange={handleRentalDescriptionChange}/>
                           </InputGroup>
                         </Stack>
@@ -156,7 +162,7 @@ export default function CreateRental() {
                   </Field>
                   <Center h='100px' color='white'>
                     <Button backgroundColor="#001922" mt={4} colorScheme='facebook'
-                    onClick={() => createRental()}
+                    onClick={() => CreateRental()}
                     >
                       Submit
                     </Button>
