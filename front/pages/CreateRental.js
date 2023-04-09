@@ -42,6 +42,7 @@ export default function CreateRental() {
         })
       }
     },
+    once: true
   },[rental]);
 
   function handleRentalNameChange(event) {
