@@ -422,28 +422,6 @@ describe("Rental collection", function() {
       .to.be.revertedWith("Rental period not found");
     });
 
-    it("should mint a new nft", async function() {
-
-      const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(
-        deployRentalCollectionFixture
-      );
-
-      expect(await rentalCollection.balanceOf(owner.address)).to.equal(0);
-      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
-      expect(await rentalCollection.balanceOf(owner.address)).to.equal(1);
-    });
-
-    it("Should mint a new nft for owner", async function() {
-
-      const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(
-        deployRentalCollectionFixture
-      );
-
-      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
-      const ownerofNFT = await rentalCollection.ownerOf(1);
-      expect(ownerofNFT).to.equal(owner.address);
-    });
-
     it("Should revert if startTimestamp < endTimestamp", async function() {
 
       const { rentalCollection, RentalPeriod, renter1 } = await loadFixture(
@@ -533,10 +511,11 @@ describe("Rental collection", function() {
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp2, RentalPeriod.endTimestamp2, renter1.address, RentalPeriod.isPaid);
-
+      expect(await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
+      expect(await rentalCollection.transferNFT(renter1.address, 2,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
       let nftRentalPeriods = await rentalCollection.getAllNftRental();
       expect(nftRentalPeriods[1].nftId).is.equal(1); 
-      await rentalCollection.burn(owner.address, 2);
+      await rentalCollection.burn(renter1.address, 2);
       nftRentalPeriods = await rentalCollection.getAllNftRental();
       expect(nftRentalPeriods[1].nftId).is.equal(0); 
     });
@@ -547,8 +526,8 @@ describe("Rental collection", function() {
       );
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
-
-      await expect(rentalCollection.burn(owner.address,RentalPeriod.nftId))
+      expect(await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
+      await expect(rentalCollection.burn(renter1.address,RentalPeriod.nftId))
       .to.emit(rentalCollection, "NftBurned")
     });
 
@@ -560,7 +539,8 @@ describe("Rental collection", function() {
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp2, RentalPeriod.endTimestamp2, renter1.address, RentalPeriod.isPaid);
-
+      expect(await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
+      expect(await rentalCollection.transferNFT(renter1.address, 2,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
       let nftRentalPeriods = await rentalCollection.getAllNftRental();
       expect(nftRentalPeriods[1].nftId).is.equal(1); 
       await expect(rentalCollection.burn(renter2.address, 2))
@@ -575,8 +555,32 @@ describe("Rental collection", function() {
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       
-      expect(await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId))
+      expect(await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
       .to.emit(rentalCollection, "NftTransfered");
+    });
+
+    it("should mint a new nft", async function() {
+
+      const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      expect(await rentalCollection.balanceOf(owner.address)).to.equal(0);
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
+      expect(await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
+      expect(await rentalCollection.balanceOf(renter1.address)).to.equal(1);
+    });
+
+    it("Should mint a new nft for owner", async function() {
+
+      const { rentalCollection, RentalPeriod, owner, renter1 } = await loadFixture(
+        deployRentalCollectionFixture
+      );
+
+      await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, owner.address, RentalPeriod.isPaid);
+      expect(await rentalCollection.transferNFT(owner.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
+      const ownerofNFT = await rentalCollection.ownerOf(1);
+      expect(ownerofNFT).to.equal(owner.address);
     });
 
     it("Should revert if address zero", async function() {
@@ -587,7 +591,7 @@ describe("Rental collection", function() {
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter2.address, RentalPeriod.isPaid);
       
-      await expect(rentalCollection.transferNFT(ethers.constants.AddressZero , RentalPeriod.nftId))
+      await expect(rentalCollection.transferNFT(ethers.constants.AddressZero , RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
       .to.be.revertedWith("No zero address");
     });
 
@@ -599,7 +603,7 @@ describe("Rental collection", function() {
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter2.address, RentalPeriod.isPaid);
       
-      await expect(rentalCollection.connect(renter2).transferNFT(renter1.address, RentalPeriod.nftId))
+      await expect(rentalCollection.connect(renter2).transferNFT(renter1.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
       .to.be.revertedWith("Ownable: caller is not the owner");
     });
 
@@ -611,7 +615,7 @@ describe("Rental collection", function() {
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       
-      await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId);
+      await rentalCollection.transferNFT(renter1.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS");
       expect(await rentalCollection.controlNFT(renter1.address, RentalPeriod.nftId))
       .to.emit(rentalCollection, "NftControlled");
     });
@@ -624,7 +628,7 @@ describe("Rental collection", function() {
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter1.address, RentalPeriod.isPaid);
       
-      await rentalCollection.transferNFT(renter2.address, RentalPeriod.nftId);
+      await rentalCollection.transferNFT(renter2.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS");
       await expect(rentalCollection.controlNFT(renter1.address, RentalPeriod.nftId))
       .to.be.revertedWith("Address unknown");
     });
@@ -648,6 +652,7 @@ describe("Rental collection", function() {
       );
 
       await rentalCollection.createRentalPeriod(RentalPeriod.startTimestamp, RentalPeriod.endTimestamp, renter2.address, RentalPeriod.isPaid);
+      expect(await rentalCollection.transferNFT(renter2.address, RentalPeriod.nftId,"https://api.pinata.cloud/pinning/pinFileToIPFS"))
       
       await expect(rentalCollection.controlNFT(renter1.address, RentalPeriod.nftId))
       .to.be.revertedWith("Address unknown");

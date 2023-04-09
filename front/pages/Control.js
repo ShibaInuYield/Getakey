@@ -9,7 +9,6 @@ import {
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { contractAddress, abi } from "../public/constants/contract"
-import axios from 'axios';
 
 export default function Control() {
   const provider = useProvider();
@@ -27,17 +26,60 @@ export default function Control() {
   const handleClick = async () => {
 
   try {
-    let transaction = await contract.controlNFT(signer.getAddress(),1);
-    console.log(transaction);
-    await transaction.wait()
-    setHasaccess(true);
-    toast({
-      title: 'Congratulations',
-      description: `Access authorized`,
-      status: 'success',
-      duration: 5000,
-      isClosable: true,
-    })
+
+    const rentalPeriodCreatedFilter = contract.filters.RentalPeriodCreated();
+    if (!rentalPeriodCreatedFilter) return;
+
+    const rentalPeriodCreatedEvents = await contract.queryFilter(
+      rentalPeriodCreatedFilter
+    );
+    if (!rentalPeriodCreatedEvents) return;
+    const fetchedRentals = rentalPeriodCreatedEvents.filter(rental => rental.args._renter === signer._address)
+    .map(rental => ({
+      id: rental?.args?.nftId.toNumber(),
+      startTimestamp: rental?.args?._startTimestamp.toNumber() ,
+      endTimestamp: rental?.args?._endTimestamp.toNumber(),
+      renter: rental?.args?._renter,
+      isPaid: rental?.args?._isPaid ? "Yes" : "No",
+      isRented: rental?.args?.isRented ? "Yes" : "No"
+    }));
+
+    if (!fetchedRentals){
+      setHasaccess(false);
+      toast({
+          title: 'Error',
+          description: 'Access denied',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+      })
+      console.log(e)
+    }
+    else{
+      let nftId = 0;
+      const date = Date.now();
+      for(let i=0;i<fetchedRentals.length;i++)
+      {
+        console.log("debut",fetchedRentals[i].startTimestamp * 1000);
+        console.log("fin",fetchedRentals[i].endTimestamp* 1000);
+        console.log("courant",date);
+        if((fetchedRentals[i].startTimestamp * 1000 < date) && (fetchedRentals[i].endTimestamp * 1000 < date)){
+          nftId = fetchedRentals[i].id;
+          console.log(nftId);
+        }
+      } 
+      let transaction = await contract.controlNFT(signer._address,nftId);
+      console.log(transaction);
+      await transaction.wait()
+      setHasaccess(true);
+      toast({
+        title: 'Congratulations',
+        description: `Access authorized`,
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
   }
   catch(e) {
     setHasaccess(false);

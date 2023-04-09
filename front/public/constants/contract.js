@@ -322,24 +322,6 @@ export const abi = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_nftId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_newRenter",
-        "type": "address"
-      }
-    ],
-    "name": "changeRenter",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "_renter",
         "type": "address"
@@ -844,6 +826,11 @@ export const abi = [
         "internalType": "uint256",
         "name": "_nftId",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_tokenURI",
+        "type": "string"
       }
     ],
     "name": "transferNFT",
@@ -868,4 +855,4 @@ export const abi = [
     "stateMutability": "payable",
     "type": "receive"
   }
-]
+];

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
-contract RentalCollection is ERC721, Ownable {
+contract RentalCollection is ERC721URIStorage, Ownable {
 
     struct Rental {
         uint256 id;
@@ -64,8 +64,6 @@ contract RentalCollection is ERC721, Ownable {
         
         nftIds.increment();
         uint nftId = nftIds.current();
-        
-        _safeMint(msg.sender, nftId);
 
         bool isRented = true;
 
@@ -113,10 +111,13 @@ contract RentalCollection is ERC721, Ownable {
         emit NftBurned(_owner, _nftId);
     }
 
-    function transferNFT(address _to, uint256 _nftId) external noZeroAddress(_to) onlyOwner {
-        safeTransferFrom(_msgSender(), _to, _nftId);
-        require(ownerOf(_nftId) == _to, "Nft not transfered");
+    function transferNFT(address _to, uint256 _nftId, string memory _tokenURI) external noZeroAddress(_to) onlyOwner {
 
+        _safeMint(_to, _nftId);
+        _setTokenURI(_nftId,_tokenURI);
+        periodIdToPeriod[_nftId].isRented = true;
+        
+        require(ownerOf(_nftId) == _to, "Nft not transfered");
         emit NftTransfered(_to, _nftId, msg.sender);
     }
 

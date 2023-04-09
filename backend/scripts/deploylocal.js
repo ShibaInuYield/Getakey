@@ -60,11 +60,11 @@ async function main() {
 
   //set info of rental period
 
-  await rentalCollection.createRentalPeriod(1679823928,1679824001,"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",false);
-  await rentalCollection.createRentalPeriod(1679823928,1679824002,"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",false);
-  await rentalCollection.createRentalPeriod(1679823928,1679824003,"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",false);
-  await rentalCollection.createRentalPeriod(1679823928,1679824004,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",true);
-  await rentalCollection.createRentalPeriod(1679823928,1679824005,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",true);
+  await rentalCollection.createRentalPeriod(1680357600,1680944400,"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",true);
+  await rentalCollection.createRentalPeriod(1680962400,1681549200,"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",true);
+  await rentalCollection.createRentalPeriod(1681567200,1682154000,"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",false);
+  await rentalCollection.createRentalPeriod(1682172000,1682758800,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",true);
+  await rentalCollection.createRentalPeriod(1682776800,1683363600,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",true);
 
   //get rentals by address
   const rentals = await rentalCollection.getRentalPeriod(1);

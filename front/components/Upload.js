@@ -27,7 +27,7 @@ async function handleFileUpload(e) {
         {
             maxContentLength: "Infinity",
             headers: {
-                "Content-Type": `multipart/form-data;boundary=${formData._boundary}`, 
+                "Content-Type": `multipart/form-data;boundary=${formData._boundary}`,
                 'pinata_api_key': API_KEY,
                 'pinata_secret_api_key': API_SECRET
             }

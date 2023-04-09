@@ -8,7 +8,7 @@ import {
   Alert,
   AlertIcon
 } from '@chakra-ui/react'
-import { useState, useEffect, Children } from 'react'
+import { useState } from 'react'
 import { ethers } from 'ethers'
 import { contractFactoryAddress, abiFactory } from "../public/constants/factory"
 import Upload from '../components/Upload'
@@ -42,6 +42,7 @@ export default function CreateRental() {
         })
       }
     },
+    once: true,
   },[rental]);
 
   function handleRentalNameChange(event) {

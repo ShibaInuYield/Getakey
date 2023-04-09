@@ -13,20 +13,24 @@ import { contractFactoryAddress, abiFactory } from "../public/constants/factory.
 
 export default function Rentals() {
  
-  const {isConnected } = useAccount()
+  const {address, isConnected } = useAccount()
   const provider = useProvider()
 
   const [rentalCollections, setRentalCollections] = useState([]);
+  const [isOwner, setIsOwner] = useState(false);
   
   useEffect(() =>{
     getRentalCollections();
-  },[]);
+  },[isOwner,address]);
 
   async function fetchRentalCollections() {
     const contractFactory = new ethers.Contract(contractFactoryAddress, abiFactory, provider)
     if (!contractFactory) return;
 
     try {
+      const owner = await contractFactory.owner();
+      setIsOwner(owner === address);
+
       const rentalCollectionCreatedFilter = contractFactory.filters.RentalCollectionCreated();
       if (!rentalCollectionCreatedFilter) return;
 
@@ -68,7 +72,7 @@ export default function Rentals() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-      {isConnected ? (
+      {isConnected ? isOwner ?(
       <div>
         <Flex alignItems="center" wrap="wrap" justify="center" grow="2">
         <Grid templateColumns='repeat(2, 1fr)' gap={3}>
@@ -86,9 +90,17 @@ export default function Rentals() {
         ) : (
           <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
           <AlertIcon />
-          Please, connect your Wallet!
+          Not allowed to see this page!
           </Alert>
-        )}
+        )
+          :
+          (
+            <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
+            <AlertIcon />
+            Please, connect your Wallet!
+            </Alert>
+          )
+      }
       </Layout>
     </>
   );

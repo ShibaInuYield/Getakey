@@ -14,6 +14,16 @@ export default function Mint(props) {
   const contract = new ethers.Contract(contractAddress, abi, provider);
   if (!contract) return;
   const handleClick = async () => {
+  if(props.isPaid === "No"){
+    toast({
+      title: 'Warning',
+      description: 'Payment not done yet',
+      status: 'warning',
+      duration: 5000,
+      isClosable: true,
+    })
+    return;
+  }
 
   const key = `ba7982d3d1680b7fff21`;
   const secret = `15bcc356dfa03f63dcbf6e59b7dbd88c1dbb703583733e15cafa7d107fbea86c`;
@@ -53,16 +63,13 @@ export default function Mint(props) {
         }
     });
 
-    const API_KEY = process.env.NEXT_PUBLIC_API_KEY
-    const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET
-
     var config = {
     method: 'post',
     url: 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
     headers: {
         "Content-Type": `application/json`,
-        'pinata_api_key': API_KEY,
-        'pinata_secret_api_key': API_SECRET
+        'pinata_api_key': process.env.NEXT_PUBLIC_API_KEY,
+        'pinata_secret_api_key': process.env.NEXT_PUBLIC_API_SECRET
     },
     
     data : data
@@ -70,12 +77,10 @@ export default function Mint(props) {
 
     const res = await axios(config);
 
-    console.log(res.data);
-
     try {
       const contract = new ethers.Contract(contractAddress, abi, signer);
-      let transaction = await contract.transferNFT(props.renter, props.nftId);
-      await transaction.wait()
+      let transaction = await contract.transferNFT(props.renter, props.nftId,'https://api.pinata.cloud/pinning/pinJSONToIPFS');
+      transaction.wait();
       toast({
         title: 'Congratulations',
         description: `NFT transfered to ${props.renter}`,
@@ -92,7 +97,6 @@ export default function Mint(props) {
           duration: 5000,
           isClosable: true,
       })
-      console.log(e)
   }
   };
 

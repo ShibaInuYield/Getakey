@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout/Layout'
 import { useAccount, useSigner,useProvider } from 'wagmi'
-import { Text, Flex, TableContainer, Table, TableCaption, Thead, Tbody, Tr, Td, Th, Tfoot, useToast, Button} from '@chakra-ui/react'
+import { Text, Flex, TableContainer, Table, TableCaption, Thead, Tbody, Tr, Td, Th} from '@chakra-ui/react'
 import {
   Alert,
   AlertIcon
@@ -13,13 +13,15 @@ import { contractAddress, abi } from "../public/constants/contract"
 import Mint from '@/components/Mint'
 
 export default function GenerateKey() {
-  const { isConnected } = useAccount();
+  const {address, isConnected } = useAccount();
 
   const [allRentals, setAllRentals] = useState([]);
 
+  const [isOwner, setIsOwner] = useState(false);
+
 useEffect(() => {
   fetchReservations();
-}, []);
+}, [address]);
 
   const provider = useProvider()
 
@@ -28,6 +30,9 @@ useEffect(() => {
     if (!contract) return;
 
     try {
+      const owner = await contract.owner();
+      setIsOwner(owner === address);
+
       const rentalPeriodCreatedFilter = contract.filters.RentalPeriodCreated();
       if (!rentalPeriodCreatedFilter) return;
 
@@ -46,8 +51,6 @@ useEffect(() => {
         }));
 
       setAllRentals(fetchedRentals);
-      setTimeout(() => {
-      }, "3000");
     } catch (error) {
       console.error(error);
     }
@@ -61,10 +64,8 @@ useEffect(() => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout>
-
-     
-        {isConnected ? (
+      <Layout>   
+        {isConnected ? isOwner ? (
           <Flex alignItems="center">        
             <TableContainer borderWidth="3px" borderRadius="10px">           
             <Table size="sm" variant='striped' color="#000000" backgroundColor='#446a9d'>
@@ -75,8 +76,8 @@ useEffect(() => {
                   <Th>vacantion start</Th>
                   <Th>vacation end</Th>
                   <Th>renter</Th>
-                  <Th>Is rented</Th>
                   <Th>Paid</Th>
+                  <Th>Is rented</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
@@ -99,9 +100,15 @@ useEffect(() => {
         ) : (
           <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
           <AlertIcon />
-          Please, connect your Wallet!
+          Not allowed to see this page!
         </Alert>
-        )}
+        ):(
+          <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
+          <AlertIcon />
+          Please, connect your Wallet!
+          </Alert>
+        )
+      }
       </Layout>
     </>
   )
