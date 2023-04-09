@@ -34,6 +34,9 @@ async function main() {
 
   console.log(
     `The address of the rentalCollection is : ${rentalCollectionAddress}\n`,
+    `The address of the rentalCollectionFactory contract is : ${rentalCollection}\n`,
+    `rentalCollectionFactory owner is : ${rentalCollectionsOwner}\n`,
+    `The address of the first contract of rental is : ${rentalCollectionOwner1Address}\n`,
   );
 }
 
