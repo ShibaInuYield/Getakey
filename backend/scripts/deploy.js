@@ -24,11 +24,10 @@ async function main() {
   const rentalCollection = rentalCollectionInstance.attach(rentalCollectionAddress);
 
   //set info of rental period
-  await rentalCollection.createRentalPeriod(1680357600,1680944400,"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",true);
-  await rentalCollection.createRentalPeriod(1680962400,1681549200,"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",true);
-  await rentalCollection.createRentalPeriod(1681567200,1682154000,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",false);
-  await rentalCollection.createRentalPeriod(1682172000,1682758800,"0x90F79bf6EB2c4f870365E785982E1f101E93b906",true);
-  await rentalCollection.createRentalPeriod(1682776800,1683363600,"0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",true);
+  await rentalCollection.createRentalPeriod(1680357600,1680944400,"0x600257fCE7885017745D4153E138B0d00a98033e",true);
+  await rentalCollection.createRentalPeriod(1680962400,1681549200,"0x600257fCE7885017745D4153E138B0d00a98033e",true);
+  await rentalCollection.createRentalPeriod(1681567200,1682154000,"0x21f19da3B864078f2Aa655C8af1A34505f82040B",false);
+  await rentalCollection.createRentalPeriod(1682172000,1682758800,"0x21f19da3B864078f2Aa655C8af1A34505f82040B",true);
 
   console.log(
     `The address of the rentalCollection is : ${rentalCollectionFactoryAddress}\n`,
