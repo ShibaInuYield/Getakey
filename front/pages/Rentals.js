@@ -37,9 +37,10 @@ export default function Rentals() {
       const rentalCollectionCreatedEvents = await contractFactory.queryFilter(
         rentalCollectionCreatedFilter
       );
+      console.log(rentalCollectionCreatedFilter);
       if (!rentalCollectionCreatedEvents) return;
-      const fetchedRentalCollections = rentalCollectionCreatedEvents.map(
-        (rentalCollection) => ({
+      const fetchedRentalCollections = rentalCollectionCreatedEvents.filter(rental => rental.args._owner === address)
+      .map((rentalCollection) => ({
           name: rentalCollection?.args?._rentalName,
           symbol: rentalCollection?.args?._rentalSymbol,
           description: rentalCollection?.args?._description,
@@ -72,7 +73,8 @@ export default function Rentals() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-      {isConnected ? isOwner ?(
+      {isConnected ? 
+      // isOwner ?(
       <div>
         <Flex alignItems="center" wrap="wrap" justify="center" grow="2">
         <Grid templateColumns='repeat(2, 1fr)' gap={3}>
@@ -87,12 +89,12 @@ export default function Rentals() {
         </Grid>
         </Flex>
         </div>
-        ) : (
-          <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
-          <AlertIcon />
-          Not allowed to see this page!
-          </Alert>
-        )
+        // ) : (
+        //   <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
+        //   <AlertIcon />
+        //   Not allowed to see this page!
+        //   </Alert>
+        // )
           :
           (
             <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">

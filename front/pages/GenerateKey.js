@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
+import { contractFactoryAddress, abiFactory } from "../public/constants/factory.js"
 import { contractAddress, abi } from "../public/constants/contract"
 import Mint from '@/components/Mint'
 
@@ -24,36 +25,48 @@ useEffect(() => {
 }, [address]);
 
   const provider = useProvider()
+  const { data: signer } = useSigner()
 
   async function fetchReservations() {
-    const contract = new ethers.Contract(contractAddress, abi, provider)
-    if (!contract) return;
 
-    try {
-      const owner = await contract.owner();
-      setIsOwner(owner === address);
+  const contractFactory = new ethers.Contract(contractFactoryAddress, abiFactory, provider)
+  if (!contractFactory) return;
 
-      const rentalPeriodCreatedFilter = contract.filters.RentalPeriodCreated();
-      if (!rentalPeriodCreatedFilter) return;
+   // Get the address of the rental collection associated with the current user's address
+  const contractAddress = await contractFactory.getRentalCollections(address);
 
-      const rentalPeriodCreatedEvents = await contract.queryFilter(
-        rentalPeriodCreatedFilter
-      );
-      if (!rentalPeriodCreatedEvents) return;
-      const fetchedRentals = rentalPeriodCreatedEvents.map(
-        (rental) => ({
-          id: rental?.args?.nftId.toNumber(),
-          startTimestamp: new Date(rental?.args?._startTimestamp * 1000).toLocaleDateString(),
-          endTimestamp: new Date(rental?.args?._endTimestamp * 1000).toLocaleDateString(),
-          renter: rental?.args?._renter,
-          isPaid: rental?.args?._isPaid ? "Yes" : "No",
-          isRented: rental?.args?.isRented ? "Yes" : "No"
-        }));
+  if (!contractAddress[0]) return;
+  // // Load the existing rental collection contract
+  const rentalCollection = new ethers.Contract(contractAddress[0], abi, provider);
 
-      setAllRentals(fetchedRentals);
-    } catch (error) {
-      console.error(error);
-    }
+  const contract = new ethers.Contract(contractAddress[0], abi, provider)
+  if (!contract) return;
+
+  try {
+    const owner = await contract.owner();
+    setIsOwner(owner === address);
+
+    const rentalPeriodCreatedFilter = contract.filters.RentalPeriodCreated();
+    if (!rentalPeriodCreatedFilter) return;
+
+    const rentalPeriodCreatedEvents = await contract.queryFilter(
+      rentalPeriodCreatedFilter
+    );
+    if (!rentalPeriodCreatedEvents) return;
+    const fetchedRentals = rentalPeriodCreatedEvents.map(
+      (rental) => ({
+        id: rental?.args?.nftId.toNumber(),
+        startTimestamp: new Date(rental?.args?._startTimestamp * 1000).toLocaleDateString(),
+        endTimestamp: new Date(rental?.args?._endTimestamp * 1000).toLocaleDateString(),
+        renter: rental?.args?._renter,
+        isPaid: rental?.args?._isPaid ? "Yes" : "No",
+        isRented: rental?.args?.isRented ? "Yes" : "No"
+      }));
+
+    setAllRentals(fetchedRentals);
+  } catch (error) {
+    console.error(error);
+  }
   }
 
   return (
@@ -65,7 +78,9 @@ useEffect(() => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>   
-        {isConnected ? isOwner ? (
+        {isConnected ? 
+        // isOwner ? 
+        // (
           <Flex alignItems="center">        
             <TableContainer borderWidth="3px" borderRadius="10px">           
             <Table size="sm" variant='striped' color="#000000" backgroundColor='#446a9d'>
@@ -97,12 +112,13 @@ useEffect(() => {
             </Table>
           </TableContainer>
           </Flex>
-        ) : (
-          <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
-          <AlertIcon />
-          Not allowed to see this page!
-        </Alert>
-        ):(
+        // ) : (
+        //   <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
+        //   <AlertIcon />
+        //   Not allowed to see this page!
+        // </Alert>
+        // )
+        :(
           <Alert borderRadius="10" fontFamily="fantasy" textAlign="center" status='info' width="50%" height="10%">
           <AlertIcon />
           Please, connect your Wallet!

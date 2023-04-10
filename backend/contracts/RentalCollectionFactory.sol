@@ -13,7 +13,7 @@ contract RentalCollectionFactory is Ownable {
     string location;
   }
 
-   event RentalCollectionCreated(string _rentalName,string _rentalSymbol, string _description, address _collectionAddress, uint _timestamp, string _image);
+   event RentalCollectionCreated(address _owner, string _rentalName,string _rentalSymbol, string _description, address _collectionAddress, uint _timestamp, string _image);
 
     mapping(address => address[]) public lessorToContractAddress;
 
@@ -28,7 +28,7 @@ contract RentalCollectionFactory is Ownable {
       rentalCollection.transferOwnership(msg.sender);
       lessorToContractAddress[msg.sender].push(address(rentalCollection));
 
-      emit RentalCollectionCreated(_rentalName,_rentalSymbol, _description, address(rentalCollection), block.timestamp, _image);
+      emit RentalCollectionCreated(msg.sender, _rentalName,_rentalSymbol, _description, address(rentalCollection), block.timestamp, _image);
         return address(rentalCollection);
     }
 

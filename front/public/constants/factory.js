@@ -24,6 +24,12 @@ export const abiFactory = [
     "inputs": [
       {
         "indexed": false,
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "_rentalName",
         "type": "string"
