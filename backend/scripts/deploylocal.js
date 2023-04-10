@@ -51,7 +51,7 @@ async function main() {
   console.log(
     `number of collection is : ${collectionFactoryNum}\n`,
     `The address of the rentalCollection contract is : ${rentalCollectionFactoryAddress}\n`,
-    `rentalCollectionFactory owner is : ${rentalCollectionsOwner}\n`,
+    `rentalCollectionFactory owner is : ${rentalCollectionsOwner[0]}\n`,
     `The address of the first contract of rental is : ${rentalCollectionOwner1Address}\n`,
   );
 }
