@@ -9,15 +9,12 @@ async function main() {
 
   // const signers = await hre.ethers.getSigners();
   const rentalCollectionFactory = await RentalCollectionFactory.deploy();
-
   const deployedFactoryContract = await rentalCollectionFactory.deployed();
   const rentalCollectionFactoryAddress = deployedFactoryContract.address;
 
-  const contractAddress = await rentalCollectionFactory.createRentalCollection("PREMIERE LOCATION","LOA","Une maison d'exception","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
+  const contractAddress = await rentalCollectionFactory.createRentalCollection("PREMIERE LOCATION","LOA","Location ***","https://ipfs.io/ipfs/QmPDkfmgVztLDLj47MCxRQkdAgPKmLKeadesNubNL4VqN8");
   await contractAddress.wait();
 
-
-  
   const rentalCollections = await rentalCollectionFactory.getRentalCollections(process.env.SIGNER);
 
   // //get rentalCollection contract deployed
